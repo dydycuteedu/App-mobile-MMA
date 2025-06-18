@@ -1,6 +1,6 @@
 // src/components/Header.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Modal,
+  Platform,
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -23,6 +25,30 @@ const categories = [
 
 const Header = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [showPopup, setShowPopup] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulated login state
+
+  const handleMyOrdersPress = () => {
+    setShowPopup(false);
+    navigation.navigate('MyOrderScreen');
+  };
+
+  const handleMyAccountPress = () => {
+    setShowPopup(false);
+    navigation.navigate('AccountScreen');
+  };
+
+  const handleLoginPress = () => {
+    setShowPopup(false);
+    navigation.navigate('LoginScreen');
+    setIsLoggedIn(true); // Simulate login
+  };
+
+  const handleLogoutPress = () => {
+    setShowPopup(false);
+    setIsLoggedIn(false);
+    // Add actual logout logic here
+  };
 
   return (
     <View style={styles.container}>
@@ -44,7 +70,10 @@ const Header = () => {
           <MaterialIcons name="shopping-cart" size={22} color="white" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.iconBtn}>
+        <TouchableOpacity 
+          style={styles.iconBtn}
+          onPress={() => setShowPopup(true)}
+        >
           <Ionicons name="person-outline" size={22} color="white" />
         </TouchableOpacity>
       </View>
@@ -72,6 +101,83 @@ const Header = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
+
+      {/* User Popup Modal */}
+      <Modal
+        visible={showPopup}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowPopup(false)}
+      >
+        <TouchableOpacity
+          style={styles.popupOverlay}
+          activeOpacity={1}
+          onPress={() => setShowPopup(false)}
+        >
+          <View style={styles.popupContainer}>
+            {isLoggedIn ? (
+              <>
+                {/* Logged in options */}
+                <View style={styles.userInfo}>
+                  <Ionicons name="person-circle-outline" size={48} color="#f97316" />
+                  <Text style={styles.userName}>John Doe</Text>
+                  <Text style={styles.userEmail}>john.doe@example.com</Text>
+                </View>
+                
+                <TouchableOpacity
+                  style={styles.popupItem}
+                  onPress={handleMyAccountPress}
+                >
+                  <MaterialIcons name="account-circle" size={24} color="#f97316" />
+                  <Text style={styles.popupText}>My Account</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={styles.popupItem}
+                  onPress={handleMyOrdersPress}
+                >
+                  <MaterialIcons name="list-alt" size={24} color="#f97316" />
+                  <Text style={styles.popupText}>My Orders</Text>
+                </TouchableOpacity>
+                
+                <View style={styles.divider} />
+                
+                <TouchableOpacity
+                  style={styles.popupItem}
+                  onPress={handleLogoutPress}
+                >
+                  <MaterialIcons name="logout" size={24} color="#f97316" />
+                  <Text style={styles.popupText}>Logout</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                {/* Not logged in options */}
+                <View style={styles.userInfo}>
+                  <Ionicons name="person-circle-outline" size={48} color="#f97316" />
+                  <Text style={styles.userName}>Guest User</Text>
+                </View>
+                
+                <TouchableOpacity
+                  style={styles.popupItem}
+                  onPress={handleLoginPress}
+                >
+                  <MaterialIcons name="login" size={24} color="#f97316" />
+                  <Text style={styles.popupText}>Login / Register</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={styles.popupItem}
+                  onPress={handleMyOrdersPress}
+                >
+                  <MaterialIcons name="list-alt" size={24} color="#f97316" />
+                  <Text style={styles.popupText}>My Orders</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
@@ -79,7 +185,7 @@ const Header = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fde68a',
-    paddingTop: 50,
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingBottom: 15,
     paddingHorizontal: 16,
     borderBottomLeftRadius: 25,
@@ -89,6 +195,7 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   logo: {
     fontSize: 22,
@@ -137,6 +244,53 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#f97316',
     marginTop: 4,
+  },
+  // Popup styles
+  popupOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  popupContainer: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+  },
+  userInfo: {
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    marginBottom: 10,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 8,
+    color: '#333',
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#777',
+    marginTop: 4,
+  },
+  popupItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+  },
+  popupText: {
+    fontSize: 16,
+    marginLeft: 15,
+    color: '#333',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#eee',
+    marginVertical: 8,
   },
 });
 
