@@ -10,9 +10,24 @@ import {
   Image
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
-import { Order } from './OrderDetailScreen';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
+
+// Định nghĩa kiểu Order
+export interface Order {
+  id: string;
+  name: string;
+  status?: string;
+  orderNumber?: string;
+  date: string;
+  items: number;
+  itemsList?: Array<{ name: string; price: string }>;
+  subtotal?: string;
+  tax?: string;
+  deliveryFee?: string;
+  total?: string;
+  image: any;
+}
 
 type OrderDetailScreenRouteProp = RouteProp<RootStackParamList, 'OrderDetailScreen'>;
 type OrderDetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'OrderDetailScreen'>;
@@ -22,8 +37,52 @@ interface Props {
   navigation: OrderDetailScreenNavigationProp;
 }
 
+// Tạo đơn hàng mặc định
+const DEFAULT_ORDER: Order = {
+  id: '1',
+  name: 'Default Order',
+  status: 'Order placed',
+  orderNumber: 'N/A',
+  date: new Date().toLocaleDateString(),
+  items: 0,
+  itemsList: [],
+  subtotal: '$0.00',
+  tax: '$0.00',
+  deliveryFee: '$0.00',
+  total: '$0.00',
+  image: require('../assets/images/strawberry-shake.png')
+};
+
 const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { order } = route.params;
+  const order = route.params?.order || DEFAULT_ORDER;
+  
+  // Hàm xử lý Order Again
+  const handleOrderAgain = () => {
+    const orderItems = order.itemsList?.map(item => {
+      // Tách số từ chuỗi giá (ví dụ: "$10.00" -> 10.00)
+      const priceValue = parseFloat(item.price.replace('$', ''));
+      return {
+        id: Math.random().toString(), // Tạo id mới ngẫu nhiên
+        name: item.name,
+        price: priceValue,
+        quantity: 1, // Mặc định số lượng là 1
+        image: order.image, // Sử dụng ảnh của đơn hàng
+        time: new Date().toLocaleDateString('en-US', {
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        }).replace(',', '.') + ' pm' // Format: "Nov 29. 15:20 pm"
+      };
+    }) || [];
+
+    // Điều hướng sang ConfirmOrderScreen
+    navigation.navigate('ConfirmOrderScreen', {
+      orderItems,
+      shippingAddress: "278 Locust View Drive Oaklands, CA"
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,17 +142,21 @@ const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
           {/* Order Items */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Order Items</Text>
-            {order.itemsList?.map((item, index) => (
-              <View key={index} style={styles.itemRow}>
-                <View style={styles.itemInfo}>
-                  <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemPrice}>{item.price}</Text>
+            {order.itemsList && order.itemsList.length > 0 ? (
+              order.itemsList.map((item, index) => (
+                <View key={index} style={styles.itemRow}>
+                  <View style={styles.itemInfo}>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemPrice}>{item.price}</Text>
+                  </View>
+                  <View style={styles.quantityContainer}>
+                    <Text style={styles.quantityText}>1</Text>
+                  </View>
                 </View>
-                <View style={styles.quantityContainer}>
-                  <Text style={styles.quantityText}>1</Text>
-                </View>
-              </View>
-            ))}
+              ))
+            ) : (
+              <Text style={styles.emptyText}>No items in this order</Text>
+            )}
           </View>
 
           {/* Price Breakdown */}
@@ -127,7 +190,10 @@ const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                 <Text style={styles.trackButtonText}>Track Order</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity style={styles.orderAgainButton}>
+            <TouchableOpacity 
+              style={styles.orderAgainButton}
+              onPress={handleOrderAgain}
+            >
               <Text style={styles.orderAgainText}>Order Again</Text>
             </TouchableOpacity>
           </View>
@@ -157,6 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 10,
   },
   backIcon: {
     fontSize: 24,
@@ -168,11 +235,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    textAlign: 'center',
+    flex: 1,
   },
   headerSpacer: {
     width: 40,
   },
-  // Wrapper cho phần nội dung với bo tròn 2 góc trên
   contentWrapper: {
     flex: 1,
     backgroundColor: '#F8F9FA',
@@ -273,6 +341,12 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 14,
     color: '#666666',
+  },
+  emptyText: {
+    color: '#666',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginVertical: 10,
   },
   quantityContainer: {
     backgroundColor: '#F5F5F5',

@@ -12,7 +12,7 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
-import { Order } from './OrderDetailScreen';
+import { Order } from './OrderDetailScreen'; // Import kiểu Order
 
 type LiveTrackingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LiveTrackingScreen'>;
 type LiveTrackingScreenRouteProp = RouteProp<RootStackParamList, 'LiveTrackingScreen'>;
@@ -22,8 +22,25 @@ interface Props {
   route: LiveTrackingScreenRouteProp;
 }
 
+// Tạo đơn hàng mặc định
+const DEFAULT_ORDER: Order = {
+  id: '1',
+  name: 'Default Order',
+  status: 'On the way',
+  orderNumber: 'N/A',
+  date: new Date().toLocaleDateString(),
+  items: 0,
+  itemsList: [],
+  subtotal: '$0.00',
+  tax: '$0.00',
+  deliveryFee: '$0.00',
+  total: '$0.00',
+  image: require('../assets/images/strawberry-shake.png')
+};
+
 const LiveTrackingScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { order } = route.params;
+  // Sử dụng order từ route.params hoặc dùng giá trị mặc định
+  const order = route.params?.order || DEFAULT_ORDER;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -80,13 +97,14 @@ const LiveTrackingScreen: React.FC<Props> = ({ navigation, route }) => {
                   source={require('../assets/images/call-icon.png')}
                   style={styles.buttonIcon}
                 />
-            
+                <Text style={styles.buttonText}>Call</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.messageButton}>
                 <Image 
                   source={require('../assets/images/message-icon.png')}
                   style={styles.buttonIcon}
                 />
+                <Text style={styles.buttonText}>Message</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -120,7 +138,7 @@ const LiveTrackingScreen: React.FC<Props> = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFD93D', // Chỉ header màu vàng
+    backgroundColor: '#FFD93D',
   },
   header: {
     flexDirection: 'row',
@@ -129,6 +147,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,
+
   },
   backButton: {
     width: 40,
@@ -148,11 +167,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    textAlign: 'center',
+    flex: 1,
   },
   headerSpacer: {
     width: 40,
   },
-  // Wrapper cho phần nội dung với bo tròn 2 góc trên
   contentWrapper: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -165,7 +185,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   mapContainer: {
-    height: 300, // Đặt chiều cao cố định cho bản đồ
+    height: 300,
     backgroundColor: '#e0e0e0',
   },
   mapImage: {
@@ -252,8 +272,11 @@ const styles = StyleSheet.create({
   buttonIcon: {
     width: 21,
     height: 21,
-    padding: 12,
-
+    marginRight: 8,
+  },
+  buttonText: {
+    color: '#FF6B35',
+    fontWeight: 'bold',
   },
   orderCard: {
     backgroundColor: '#fff',
@@ -297,7 +320,7 @@ const styles = StyleSheet.create({
     height: 8,
     backgroundColor: '#FF6B35',
     borderRadius: 4,
-    width: '50%', // Giả sử đang ở bước 2 (On the way)
+    width: '50%',
   },
   progressLabels: {
     flexDirection: 'row',

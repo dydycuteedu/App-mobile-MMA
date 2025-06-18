@@ -14,8 +14,12 @@ import DessertScreen from './src/screen/DessertScreen';
 import DrinksScreen from './src/screen/DrinksScreen';
 import MyOrdersScreen from './src/screen/MyOrderScreen';
 import OrderDetailScreen from './src/screen/OrderDetailScreen';
-  import LiveTrackingScreen from './src/screen/LiveTrackingScreen';
-  import ReviewScreen from './src/screen/ReviewScreen';
+import LiveTrackingScreen from './src/screen/LiveTrackingScreen';
+import ConfirmOrderScreen from './src/screen/ConfirmOrderScreen';
+import ReviewScreen from './src/screen/ReviewScreen';
+import PaymentScreen from './src/screen/PaymentScreen';
+import OrderSuccessScreen from './src/screen/OrderSuccessScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -31,18 +35,12 @@ export default function App() {
         <Stack.Screen name="Dessert" component={DessertScreen} />
         <Stack.Screen name="Drinks" component={DrinksScreen} />
         <Stack.Screen name="MyOrderScreen" component={MyOrdersScreen} />
-        <Stack.Screen 
-          name="OrderDetailScreen" 
-          component={OrderDetailScreen}
-        />
-        <Stack.Screen 
-  name="ReviewScreen" 
-  component={ReviewScreen} 
-/>
-        <Stack.Screen 
-  name="LiveTrackingScreen" 
-  component={LiveTrackingScreen} 
-/>
+        <Stack.Screen name="OrderDetailScreen" component={OrderDetailScreen}/>
+        <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
+        <Stack.Screen  name="LiveTrackingScreen" component={LiveTrackingScreen} />
+        <Stack.Screen name="ConfirmOrderScreen" component={ConfirmOrderScreen} />
+        <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+        <Stack.Screen name="OrderSuccessScreen" component={OrderSuccessScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
