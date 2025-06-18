@@ -8,12 +8,13 @@ import {
   Image,
   SafeAreaView,
   StatusBar,
-  Dimensions,
+  TextInput,
   Alert
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Order } from './OrderDetailScreen';
 import { RootStackParamList } from '../navigation/types';
+import LiveTrackingScreen from './LiveTrackingScreen';
 
 type MyOrdersScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MyOrderScreen'>;
 
@@ -29,6 +30,18 @@ interface OrderState {
 
 const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState<string>('Active');
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [cancelReasons, setCancelReasons] = useState({
+    reason1: false,
+    reason2: false,
+    reason3: false,
+    reason4: false,
+    reason5: false,
+    otherReason: false,
+  });
+  const [otherReasonText, setOtherReasonText] = useState('');
   const [orders, setOrders] = useState<OrderState>({
     active: [
       {
@@ -222,20 +235,38 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleCancelOrder = (orderId: number) => {
-    Alert.alert(
-      "Confirm Cancellation",
-      "Are you sure you want to cancel this order?",
-      [
-        {
-          text: "No",
-          style: "cancel"
-        },
-        { 
-          text: "Yes", 
-          onPress: () => confirmCancelOrder(orderId)
-        }
-      ]
-    );
+    setSelectedOrderId(orderId);
+    setShowCancelModal(true);
+  };
+
+  const handleReasonToggle = (reason: keyof typeof cancelReasons) => {
+    setCancelReasons(prev => ({
+      ...prev,
+      [reason]: !prev[reason]
+    }));
+  };
+
+  const handleSubmitCancel = () => {
+    if (!selectedOrderId) return;
+    
+    const hasReasonSelected = Object.values(cancelReasons).some(val => val);
+    if (!hasReasonSelected && !otherReasonText) {
+      Alert.alert("Please select a reason for cancellation");
+      return;
+    }
+    
+    confirmCancelOrder(selectedOrderId);
+    setShowCancelModal(false);
+    setShowSuccessModal(true);
+    setCancelReasons({
+      reason1: false,
+      reason2: false,
+      reason3: false,
+      reason4: false,
+      reason5: false,
+      otherReason: false,
+    });
+    setOtherReasonText('');
   };
 
   const confirmCancelOrder = (orderId: number) => {
@@ -254,7 +285,6 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
       cancelled: [cancelledOrder, ...prev.cancelled]
     }));
     
-    // Auto switch to Cancelled tab if currently in Active tab
     if (activeTab === 'Active') {
       setActiveTab('Cancelled');
     }
@@ -333,6 +363,7 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity 
                 style={[styles.button, styles.trackButton]}
                 activeOpacity={0.8}
+                onPress={() => navigation.navigate('LiveTrackingScreen', { order })}
               >
                 <Text style={styles.trackButtonText}>Track Driver</Text>
               </TouchableOpacity>
@@ -344,6 +375,7 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity 
                 style={[styles.button, styles.reviewButton]}
                 activeOpacity={0.8}
+                onPress={() => navigation.navigate('ReviewScreen', { order })}
               >
                 <Text style={styles.reviewButtonText}>Leave a feedback</Text>
               </TouchableOpacity>
@@ -403,9 +435,122 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
         contentContainerStyle={styles.scrollContent}
       >
         {getCurrentOrders().map((order) => (
-        <OrderCard key={`${activeTab}-${order.id}`} order={order} />
+          <OrderCard key={`${activeTab}-${order.id}`} order={order} />
         ))}
       </ScrollView>
+
+      {/* Cancel Order Modal */}
+      {showCancelModal && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Cancel Order</Text>
+            <Text style={styles.modalSubtitle}>
+              We understand that plans can change. Please select the reason for canceling so we can keep improving.
+            </Text>
+            
+            <View style={styles.reasonsContainer}>
+              <TouchableOpacity 
+                style={styles.reasonItem}
+                onPress={() => handleReasonToggle('reason1')}
+              >
+                <View style={styles.checkbox}>
+                  {cancelReasons.reason1 && <View style={styles.checkboxChecked} />}
+                </View>
+                <Text style={styles.reasonText}>I changed my mind.</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.reasonItem}
+                onPress={() => handleReasonToggle('reason2')}
+              >
+                <View style={styles.checkbox}>
+                  {cancelReasons.reason2 && <View style={styles.checkboxChecked} />}
+                </View>
+                <Text style={styles.reasonText}>Ordered by mistake.</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.reasonItem}
+                onPress={() => handleReasonToggle('reason3')}
+              >
+                <View style={styles.checkbox}>
+                  {cancelReasons.reason3 && <View style={styles.checkboxChecked} />}
+                </View>
+                <Text style={styles.reasonText}>Found a better price elsewhere.</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.reasonItem}
+                onPress={() => handleReasonToggle('reason4')}
+              >
+                <View style={styles.checkbox}>
+                  {cancelReasons.reason4 && <View style={styles.checkboxChecked} />}
+                </View>
+                <Text style={styles.reasonText}>The restaurant is not responding.</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.reasonItem}
+                onPress={() => handleReasonToggle('reason5')}
+              >
+                <View style={styles.checkbox}>
+                  {cancelReasons.reason5 && <View style={styles.checkboxChecked} />}
+                </View>
+                <Text style={styles.reasonText}>The estimated delivery time is too long.</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.reasonItem}
+                onPress={() => handleReasonToggle('otherReason')}
+              >
+                <View style={styles.checkbox}>
+                  {cancelReasons.otherReason && <View style={styles.checkboxChecked} />}
+                </View>
+                <Text style={styles.reasonText}>Others</Text>
+              </TouchableOpacity>
+              
+              {cancelReasons.otherReason && (
+                <TextInput
+                  style={styles.otherReasonInput}
+                  placeholder="Others reason..."
+                  value={otherReasonText}
+                  onChangeText={setOtherReasonText}
+                  multiline
+                />
+              )}
+            </View>
+            
+            <TouchableOpacity 
+              style={styles.submitButton}
+              onPress={handleSubmitCancel}
+            >
+              <Text style={styles.submitButtonText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.successTitle}>Order Cancelled!</Text>
+            <Text style={styles.successText}>
+              Your order has been successfully cancelled
+            </Text>
+            <Text style={styles.supportText}>
+              If you have any question reach directly to our customer support
+            </Text>
+            
+            <TouchableOpacity 
+              style={styles.successButton}
+              onPress={() => setShowSuccessModal(false)}
+            >
+              <Text style={styles.successButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -422,6 +567,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,
+    marginTop: 10,
   },
   backButton: {
     width: 40,
@@ -430,6 +576,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 10,
   },
   backIcon: {
     fontSize: 24,
@@ -510,7 +657,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-   orderImageContainer: {
+  orderImageContainer: {
     width: 70,
     height: 70,
     borderRadius: 16,
@@ -628,6 +775,118 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '700',
     fontSize: 14,
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  modalContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 25,
+    width: '85%',
+    maxHeight: '80%',
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  reasonsContainer: {
+    marginBottom: 20,
+  },
+  reasonItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    marginRight: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxChecked: {
+    width: 12,
+    height: 12,
+    borderRadius: 2,
+    backgroundColor: '#FF6B35',
+  },
+  reasonText: {
+    fontSize: 15,
+    color: '#1F2937',
+    flex: 1,
+  },
+  otherReasonInput: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 8,
+    minHeight: 50,
+    textAlignVertical: 'top',
+  },
+  submitButton: {
+    backgroundColor: '#FF6B35',
+    borderRadius: 15,
+    paddingVertical: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submitButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  successTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  successText: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  supportText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    textAlign: 'center',
+    marginBottom: 25,
+  },
+  successButton: {
+    backgroundColor: '#FF6B35',
+    borderRadius: 15,
+    paddingVertical: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  successButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

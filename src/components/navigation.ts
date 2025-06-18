@@ -12,5 +12,6 @@ export type RootStackParamList = {
   AccountScreen: undefined;
   LoginScreen: undefined;
   OrderDetailScreen: { order: Order };
-
+  LiveTrackingScreen: { order: Order };
+  ReviewScreen: { order: Order };
 };

@@ -14,7 +14,8 @@ import DessertScreen from './src/screen/DessertScreen';
 import DrinksScreen from './src/screen/DrinksScreen';
 import MyOrdersScreen from './src/screen/MyOrderScreen';
 import OrderDetailScreen from './src/screen/OrderDetailScreen';
-
+  import LiveTrackingScreen from './src/screen/LiveTrackingScreen';
+  import ReviewScreen from './src/screen/ReviewScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -30,18 +31,18 @@ export default function App() {
         <Stack.Screen name="Dessert" component={DessertScreen} />
         <Stack.Screen name="Drinks" component={DrinksScreen} />
         <Stack.Screen name="MyOrderScreen" component={MyOrdersScreen} />
-        {/* Thêm màn hình chi tiết đơn hàng */}
         <Stack.Screen 
           name="OrderDetailScreen" 
           component={OrderDetailScreen}
-          options={{ 
-            headerShown: true,
-            headerTitle: 'Order Details',
-            headerStyle: { backgroundColor: '#FFFFFF' },
-            headerTintColor: '#000000',
-            headerBackTitleVisible: false,
-          }}
         />
+        <Stack.Screen 
+  name="ReviewScreen" 
+  component={ReviewScreen} 
+/>
+        <Stack.Screen 
+  name="LiveTrackingScreen" 
+  component={LiveTrackingScreen} 
+/>
       </Stack.Navigator>
     </NavigationContainer>
   );
