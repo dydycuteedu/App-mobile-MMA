@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import HomeScreen from "./HomeScreen";
 export default function LoginScreen() {
   const navigation = useNavigation();
   return (
@@ -36,8 +37,8 @@ export default function LoginScreen() {
           secureTextEntry
         ></TextInput>
       </View>
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate("Home")}>
+        <Text style={styles.buttonText }>Login</Text>
       </TouchableOpacity>
 
       <View style={styles.signupContainer}>

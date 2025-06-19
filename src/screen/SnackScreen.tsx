@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const snacks = [
   {
@@ -52,7 +53,7 @@ const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
 
 const SnackScreen = () => {
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
         <Header />
 
       {/* Sort Bar */}
@@ -63,7 +64,7 @@ const SnackScreen = () => {
       </View>
 
       {/* Snack Cards */}
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
         {snacks.map(snack => (
           <View key={snack.id} style={styles.card}>
             <Image source={snack.image} style={styles.image} />
@@ -80,14 +81,15 @@ const SnackScreen = () => {
           </View>
         ))}
       </ScrollView>
-    </ScrollView>
+      <Footer/>
+    </View>
   );
 };
 
 export default SnackScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: 10 },
+  container: { flex: 1, backgroundColor: '#fff'},
 
   categories: {
     flexDirection: 'row',

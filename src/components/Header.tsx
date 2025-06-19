@@ -19,6 +19,7 @@ const categories = [
   { name: 'Vegan', icon: 'leaf-outline', screen: 'Vegan' },
   { name: 'Dessert', icon: 'ice-cream-outline', screen: 'Dessert' },
   { name: 'Drinks', icon: 'cafe-outline', screen: 'Drinks' },
+  { name: 'Login', icon: 'cafe-outline', screen: 'Login' },
 ];
 
 const Header = () => {
