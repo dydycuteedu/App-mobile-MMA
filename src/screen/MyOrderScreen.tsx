@@ -67,7 +67,7 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
         price: '$20.00',
         date: '17 Oct, 01:20 pm',
         items: '1 item',
-        image: require('../../assets/chicken.jpg'),
+        image: require('../../assets/chicken.png'),
         orderNumber: '0054753',
         subtotal: '$20.00',
         tax: '$3.00',
