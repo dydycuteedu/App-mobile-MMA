@@ -35,7 +35,7 @@ const Header = () => {
       {/* Platform Name & Top Icons */}
       <View style={styles.topRow}>
         <Image
-          source={require("../../assets/logo-red.png")}
+         source={require("../assets/images/logo.png")}
           style={styles.logo}/>
 
         <TextInput
