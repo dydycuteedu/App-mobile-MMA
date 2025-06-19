@@ -36,7 +36,7 @@ const snacks = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/chicken.jpg'),
+    image: require('../../assets/chicken.png'),
   },
   {
     id: '4',
@@ -45,7 +45,7 @@ const snacks = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/taco.jpg'),
+    image: require('../../assets/taco.png'),
   },
 ];
 

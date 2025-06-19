@@ -18,7 +18,7 @@ const vegans = [
     tag: 'HOT',
     price: 15.0,
     description: 'Fried chicken with rice and egg',
-    image: require('../../assets/vegan-quinoa.jpg'),
+    image: require('../../assets/vegan-quinoa.png'),
   },
   {
     id: '2',
@@ -27,7 +27,7 @@ const vegans = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/vegan-toast.jpg'),
+    image: require('../../assets/vegan-toast.png'),
   },
   {
     id: '3',
@@ -36,7 +36,7 @@ const vegans = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/salad.jpg'),
+    image: require('../../assets/salad.png'),
   }
 ];
 
