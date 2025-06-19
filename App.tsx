@@ -3,6 +3,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+
 import LoginScreen from "./src/screen/LoginScren";
 import SigninScreen from "./src/screen/SigninScreen";
 import HomeScreen from "./src/screen/HomeScreen";
@@ -40,6 +41,7 @@ export default function App() {
         <Stack.Screen name="Vegan" component={VeganScreen} />
         <Stack.Screen name="Dessert" component={DessertScreen} />
         <Stack.Screen name="Drinks" component={DrinksScreen} />
+        <Stack.Screen name="Detail" component={DetailScreen} />
         <Stack.Screen name="MyOrderScreen" component={MyOrdersScreen} />
         <Stack.Screen name="OrderDetailScreen" component={OrderDetailScreen} />
         <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
