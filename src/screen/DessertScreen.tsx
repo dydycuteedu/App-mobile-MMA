@@ -71,23 +71,7 @@ const DessertScreen = () => {
       </View>
 
       {/* Dessert Cards */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-        {desserts.map(dessert => (
-          <View key={dessert.id} style={styles.card}>
-            <Image source={dessert.image} style={styles.image} />
-            <View style={styles.cardContent}>
-              <View style={styles.titleRow}>
-                <Text style={styles.title}>{dessert.name}</Text>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{dessert.tag}</Text>
-                </View>
-              </View>
-              <Text style={styles.price}>${dessert.price.toFixed(2)}</Text>
-              <Text style={styles.description}>{dessert.description}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView><ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
   {desserts.map(dessert => (
     <View key={dessert.id} style={styles.card}>
       <Image source={dessert.image} style={styles.image} />
