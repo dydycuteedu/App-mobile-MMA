@@ -104,10 +104,10 @@ const Header = () => {
         <Text style={styles.logo}>
           Click<Text style={styles.logoAccent}>&</Text>Eat
         </Text>
-        <Image
+        {/* <Image
           source={require("../assets/images/logo.png")}
           style={styles.logo}
-        />
+        /> */}
 
         <TextInput
           placeholder="Search"
