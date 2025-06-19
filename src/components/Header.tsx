@@ -8,19 +8,24 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Image
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from './navigation'; // Adjust path as needed
 
-const categories = [
+const categories: {
+  name: string;
+  icon: string;
+  screen: keyof RootStackParamList;
+}[] = [
   { name: 'Snacks', icon: 'fast-food-outline', screen: 'Snack' },
   { name: 'Meal', icon: 'restaurant-outline', screen: 'Meal' },
   { name: 'Vegan', icon: 'leaf-outline', screen: 'Vegan' },
   { name: 'Dessert', icon: 'ice-cream-outline', screen: 'Dessert' },
   { name: 'Drinks', icon: 'cafe-outline', screen: 'Drinks' },
-  { name: 'Login', icon: 'cafe-outline', screen: 'Login' },
 ];
+
 
 const Header = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -29,7 +34,9 @@ const Header = () => {
     <View style={styles.container}>
       {/* Platform Name & Top Icons */}
       <View style={styles.topRow}>
-        <Text style={styles.logo}>Click<Text style={styles.logoAccent}>&</Text>Eat</Text>
+        <Image
+          source={require("../../assets/logo-red.png")}
+          style={styles.logo}/>
 
         <TextInput
           placeholder="Search"
@@ -66,7 +73,7 @@ const Header = () => {
           <TouchableOpacity
             key={index}
             style={styles.categoryItem}
-            onPress={() => navigation.navigate(cat.screen as keyof RootStackParamList)}
+            onPress={() => navigation.navigate(cat.screen)}
           >
             <Ionicons name={cat.icon as any} size={22} color="#f97316" />
             <Text style={styles.categoryText}>{cat.name}</Text>
@@ -80,7 +87,7 @@ const Header = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fde68a',
-    paddingTop: 50,
+    paddingTop: 40,
     paddingBottom: 15,
     paddingHorizontal: 16,
     borderBottomLeftRadius: 25,
@@ -92,11 +99,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginRight: 10,
-    color: '#f97316',
+    width: 144,
+    height: 100,
+    resizeMode: 'contain',
+    alignSelf: 'center',
   },
+topControls: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
   logoAccent: {
     color: '#ea580c',
   },
@@ -115,7 +127,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   greeting: {
-    marginTop: 16,
+    
   },
   greetingText: {
     fontSize: 22,

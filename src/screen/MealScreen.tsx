@@ -10,6 +10,9 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
 
 const meals = [
   {
@@ -76,9 +79,12 @@ const meals = [
   }
 ];
 
+type MealScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Meal'>;
 const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
 
 const MealScreen = () => {
+  
+  const navigation = useNavigation<MealScreenNavigationProp>();
   return (
     <View style={styles.container}>
         <Header />
@@ -92,22 +98,30 @@ const MealScreen = () => {
 
       {/* Meal Cards */}
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-        {meals.map(meal => (
-          <View key={meal.id} style={styles.card}>
-            <Image source={meal.image} style={styles.image} />
-            <View style={styles.cardContent}>
-              <View style={styles.titleRow}>
-                <Text style={styles.title}>{meal.name}</Text>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{meal.tag}</Text>
-                </View>
-              </View>
-              <Text style={styles.price}>${meal.price.toFixed(2)}</Text>
-              <Text style={styles.description}>{meal.description}</Text>
-            </View>
+  {meals.map(meal => (
+    <View key={meal.id} style={styles.card}>
+      <Image source={meal.image} style={styles.image} />
+      <View style={styles.cardContent}>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{meal.name}</Text>
+          <View style={styles.tag}>
+            <Text style={styles.tagText}>{meal.tag}</Text>
           </View>
-        ))}
-      </ScrollView>
+        </View>
+        <Text style={styles.price}>${meal.price.toFixed(2)}</Text>
+        <Text style={styles.description}>{meal.description}</Text>
+
+        {/* 👇 Detail Button */}
+        <TouchableOpacity
+          style={styles.detailButton}
+          onPress={() => navigation.navigate('Detail', { item: meal })}>
+          <Text style={styles.detailButtonText}>View Details</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  ))}
+</ScrollView>
+
       <Footer/>
     </View>
   );
@@ -205,4 +219,17 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
+  detailButton: {
+  marginTop: 10,
+  alignSelf: 'flex-start',
+  backgroundColor: '#f97316',
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 8,
+},
+detailButtonText: {
+  color: 'white',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
 });

@@ -10,6 +10,9 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';  
+import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
 
 const vegans = [
   {
@@ -41,8 +44,10 @@ const vegans = [
 ];
 
 const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
+type VeganScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Vegan'>;
 
 const VeganScreen = () => {
+  const navigation = useNavigation<VeganScreenNavigationProp>();
   return (
     <View style={styles.container}>
         <Header />
@@ -56,22 +61,30 @@ const VeganScreen = () => {
 
       {/* Vegan Cards */}
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-        {vegans.map(vegan => (
-          <View key={vegan.id} style={styles.card}>
-            <Image source={vegan.image} style={styles.image} />
-            <View style={styles.cardContent}>
-              <View style={styles.titleRow}>
-                <Text style={styles.title}>{vegan.name}</Text>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{vegan.tag}</Text>
-                </View>
-              </View>
-              <Text style={styles.price}>${vegan.price.toFixed(2)}</Text>
-              <Text style={styles.description}>{vegan.description}</Text>
-            </View>
+  {vegans.map(vegan => (
+    <View key={vegan.id} style={styles.card}>
+      <Image source={vegan.image} style={styles.image} />
+      <View style={styles.cardContent}>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{vegan.name}</Text>
+          <View style={styles.tag}>
+            <Text style={styles.tagText}>{vegan.tag}</Text>
           </View>
-        ))}
-      </ScrollView>
+        </View>
+        <Text style={styles.price}>${vegan.price.toFixed(2)}</Text>
+        <Text style={styles.description}>{vegan.description}</Text>
+
+        {/* 👇 Detail Button */}
+        <TouchableOpacity
+          style={styles.detailButton}
+          onPress={() => navigation.navigate('Detail', { item: vegan })}>
+          <Text style={styles.detailButtonText}>View Details</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  ))}
+</ScrollView>
+
       <Footer/>
     </View>
   );
@@ -169,4 +182,17 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
+  detailButton: {
+  marginTop: 10,
+  alignSelf: 'flex-start',
+  backgroundColor: '#f97316',
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 8,
+},
+detailButtonText: {
+  color: 'white',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
 });

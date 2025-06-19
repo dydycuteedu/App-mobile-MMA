@@ -7,4 +7,5 @@ export type RootStackParamList = {
   Vegan: undefined;
   Dessert: undefined;
   Drinks: undefined;
+  Detail: { item: any };
 };
