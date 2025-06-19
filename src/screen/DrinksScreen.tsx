@@ -9,8 +9,12 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';  
+import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
 
-const vegans = [
+const drinks = [
   {
     id: '1',
     name: 'Blueberry Tea',
@@ -53,15 +57,19 @@ const vegans = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/popcorn-milkshake.jpg'),
+    image: require('../../assets/popcorn-milkshake.png'),
   },
 ];
 
 const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
+type DrinkScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Drinks'>;
 
-const SnackScreen = () => {
+const DrinkScreen = () => {
+    const navigation = useNavigation<DrinkScreenNavigationProp>();
+  
+  
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
         <Header />
 
       {/* Sort Bar */}
@@ -71,32 +79,43 @@ const SnackScreen = () => {
         <Ionicons name="chevron-down" size={16} color="#444" />
       </View>
 
-      {/* Snack Cards */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {vegans.map(vegan => (
-          <View key={vegan.id} style={styles.card}>
-            <Image source={vegan.image} style={styles.image} />
-            <View style={styles.cardContent}>
-              <View style={styles.titleRow}>
-                <Text style={styles.title}>{vegan.name}</Text>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{vegan.tag}</Text>
-                </View>
-              </View>
-              <Text style={styles.price}>${vegan.price.toFixed(2)}</Text>
-              <Text style={styles.description}>{vegan.description}</Text>
-            </View>
+      {/* Drink Cards */}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+  {drinks.map(drink => (
+    <View key={drink.id} style={styles.card}>
+      <Image source={drink.image} style={styles.image} />
+      <View style={styles.cardContent}>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{drink.name}</Text>
+          <View style={styles.tag}>
+            <Text style={styles.tagText}>{drink.tag}</Text>
           </View>
-        ))}
-      </ScrollView>
-    </ScrollView>
+        </View>
+        <Text style={styles.price}>${drink.price.toFixed(2)}</Text>
+        <Text style={styles.description}>{drink.description}</Text>
+
+        {/* 👇 Detail Button */}
+        <TouchableOpacity
+          style={styles.detailButton}
+          onPress={() => navigation.navigate('Detail', { item: drink })}>
+          <Text style={styles.detailButtonText}>View Details</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  ))}
+</ScrollView>
+
+      <Footer/>
+      
+      {/* Categories */}
+    </View>
   );
 };
 
-export default SnackScreen;
+export default DrinkScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: 10 },
+  container: { flex: 1, backgroundColor: '#fff'},
 
   categories: {
     flexDirection: 'row',
@@ -185,4 +204,17 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
+  detailButton: {
+  marginTop: 10,
+  alignSelf: 'flex-start',
+  backgroundColor: '#f97316',
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 8,
+},
+detailButtonText: {
+  color: 'white',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
 });

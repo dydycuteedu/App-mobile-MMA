@@ -9,6 +9,10 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
 
 const meals = [
   {
@@ -17,7 +21,7 @@ const meals = [
     tag: 'HOT',
     price: 15.0,
     description: 'Fried chicken with rice and egg',
-    image: require('../../assets/katsu-donburi.jpg'),
+    image: require('../../assets/katsu-donburi.png'),
   },
   {
     id: '2',
@@ -35,7 +39,7 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/chicken.jpg'),
+    image: require('../../assets/chicken.png'),
   },
   {
     id: '4',
@@ -44,7 +48,7 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/taco.jpg'),
+    image: require('../../assets/taco.png'),
   },
   {
     id: '5',
@@ -53,7 +57,7 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/bolognese.jpg'),
+    image: require('../../assets/bolognese.png'),
   },
   {
     id: '6',
@@ -71,15 +75,18 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/pad-thai.jpg'),
+    image: require('../../assets/pad-thai.png'),
   }
 ];
 
+type MealScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Meal'>;
 const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
 
-const SnackScreen = () => {
+const MealScreen = () => {
+  
+  const navigation = useNavigation<MealScreenNavigationProp>();
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
         <Header />
 
       {/* Sort Bar */}
@@ -89,32 +96,41 @@ const SnackScreen = () => {
         <Ionicons name="chevron-down" size={16} color="#444" />
       </View>
 
-      {/* Snack Cards */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {meals.map(meal => (
-          <View key={meal.id} style={styles.card}>
-            <Image source={meal.image} style={styles.image} />
-            <View style={styles.cardContent}>
-              <View style={styles.titleRow}>
-                <Text style={styles.title}>{meal.name}</Text>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{meal.tag}</Text>
-                </View>
-              </View>
-              <Text style={styles.price}>${meal.price.toFixed(2)}</Text>
-              <Text style={styles.description}>{meal.description}</Text>
-            </View>
+      {/* Meal Cards */}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+  {meals.map(meal => (
+    <View key={meal.id} style={styles.card}>
+      <Image source={meal.image} style={styles.image} />
+      <View style={styles.cardContent}>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{meal.name}</Text>
+          <View style={styles.tag}>
+            <Text style={styles.tagText}>{meal.tag}</Text>
           </View>
-        ))}
-      </ScrollView>
-    </ScrollView>
+        </View>
+        <Text style={styles.price}>${meal.price.toFixed(2)}</Text>
+        <Text style={styles.description}>{meal.description}</Text>
+
+        {/* 👇 Detail Button */}
+        <TouchableOpacity
+          style={styles.detailButton}
+          onPress={() => navigation.navigate('Detail', { item: meal })}>
+          <Text style={styles.detailButtonText}>View Details</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  ))}
+</ScrollView>
+
+      <Footer/>
+    </View>
   );
 };
 
-export default SnackScreen;
+export default MealScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: 10 },
+  container: { flex: 1, backgroundColor: '#fff'},
 
   categories: {
     flexDirection: 'row',
@@ -203,4 +219,17 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
+  detailButton: {
+  marginTop: 10,
+  alignSelf: 'flex-start',
+  backgroundColor: '#f97316',
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 8,
+},
+detailButtonText: {
+  color: 'white',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
 });

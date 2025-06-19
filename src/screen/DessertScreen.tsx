@@ -9,6 +9,10 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
 
 const desserts = [
   {
@@ -49,10 +53,14 @@ const desserts = [
 ];
 
 const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
+type DessertScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Dessert'>;
 
-const SnackScreen = () => {
+const DessertScreen = () => {
+  
+  const navigation = useNavigation<DessertScreenNavigationProp>();
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
         <Header />
 
       {/* Sort Bar */}
@@ -62,8 +70,8 @@ const SnackScreen = () => {
         <Ionicons name="chevron-down" size={16} color="#444" />
       </View>
 
-      {/* Snack Cards */}
-      <ScrollView showsVerticalScrollIndicator={false}>
+      {/* Dessert Cards */}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
         {desserts.map(dessert => (
           <View key={dessert.id} style={styles.card}>
             <Image source={dessert.image} style={styles.image} />
@@ -79,15 +87,40 @@ const SnackScreen = () => {
             </View>
           </View>
         ))}
-      </ScrollView>
-    </ScrollView>
+      </ScrollView><ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+  {desserts.map(dessert => (
+    <View key={dessert.id} style={styles.card}>
+      <Image source={dessert.image} style={styles.image} />
+      <View style={styles.cardContent}>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{dessert.name}</Text>
+          <View style={styles.tag}>
+            <Text style={styles.tagText}>{dessert.tag}</Text>
+          </View>
+        </View>
+        <Text style={styles.price}>${dessert.price.toFixed(2)}</Text>
+        <Text style={styles.description}>{dessert.description}</Text>
+
+        {/* 👇 Detail Button */}
+        <TouchableOpacity
+          style={styles.detailButton}
+          onPress={() => navigation.navigate('Detail', { item: dessert })}>
+          <Text style={styles.detailButtonText}>View Details</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  ))}
+</ScrollView>
+
+      <Footer/>
+    </View>
   );
 };
 
-export default SnackScreen;
+export default DessertScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: 10 },
+  container: { flex: 1, backgroundColor: '#fff'},
 
   categories: {
     flexDirection: 'row',
@@ -175,5 +208,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#666',
     marginTop: 4,
-  },
+  },detailButton: {
+  marginTop: 10,
+  alignSelf: 'flex-start',
+  backgroundColor: '#f97316',
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 8,
+},
+detailButtonText: {
+  color: 'white',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
 });

@@ -14,4 +14,5 @@ export type RootStackParamList = {
   OrderDetailScreen: { order: Order };
   LiveTrackingScreen: { order: Order };
   ReviewScreen: { order: Order };
+  Detail: { item: any };
 };

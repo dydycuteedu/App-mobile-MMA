@@ -10,6 +10,7 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const categories = [
   { name: 'Snacks', icon: 'fast-food-outline', screen: 'Snack' },
@@ -34,8 +35,8 @@ const HomeScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ScrollView style={styles.container}>
-      <Header />
+    <View style={styles.container}>
+      <Header/>
 
       {/* Best Seller Section */}
       <View style={styles.section}>
@@ -63,7 +64,7 @@ const HomeScreen = () => {
       </View>
 
       {/* Recommended Section */}
-      <View style={styles.section}>
+      <ScrollView style={styles.section} contentContainerStyle={{ paddingBottom: 100 }}>
         <Text style={styles.sectionTitle}>Recommend</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {recommended.map((item, index) => (
@@ -74,13 +75,14 @@ const HomeScreen = () => {
             </View>
           ))}
         </ScrollView>
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <Footer/>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingTop: 40 },
+  container: { flex: 1, backgroundColor: '#fff'},
   categories: {
     flexDirection: 'row',
     justifyContent: 'space-around',

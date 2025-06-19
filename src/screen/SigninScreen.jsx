@@ -11,6 +11,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useState } from "react";
 import { Platform } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 
 export default function SigninScreen() {
   const [dob, setDob] = useState(new Date(2000, 0, 1));
@@ -20,6 +21,7 @@ export default function SigninScreen() {
     setShowPicker(false);
     if (selectedDate) setDob(selectedDate);
   };
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -78,7 +80,7 @@ export default function SigninScreen() {
       <View>
         <Text>by continue....</Text>
       </View>
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate("Home")}>
         <Text style={styles.buttonText}>Sign in</Text>
       </TouchableOpacity>
     </View>

@@ -18,7 +18,11 @@ import { RootStackParamList } from './navigation';
 
 const { width, height } = Dimensions.get('window');
 
-const categories = [
+const categories: {
+  name: string;
+  icon: string;
+  screen: keyof RootStackParamList;
+}[] = [
   { name: 'Snacks', icon: 'fast-food-outline', screen: 'Snack' },
   { name: 'Meal', icon: 'restaurant-outline', screen: 'Meal' },
   { name: 'Vegan', icon: 'leaf-outline', screen: 'Vegan' },
@@ -47,6 +51,7 @@ const initialCartItems = [
     quantity: 1
   }
 ];
+
 
 const Header = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -94,6 +99,10 @@ const Header = () => {
       {/* Header */}
       <View style={styles.topRow}>
         <Text style={styles.logo}>Click<Text style={styles.logoAccent}>&</Text>Eat</Text>
+        <Image
+         source={require("../assets/images/logo.png")}
+          style={styles.logo}/>
+
         <TextInput
           placeholder="Search"
           style={styles.searchInput}
@@ -131,7 +140,7 @@ const Header = () => {
           <TouchableOpacity
             key={index}
             style={styles.categoryItem}
-            onPress={() => navigation.navigate(cat.screen as keyof RootStackParamList)}
+            onPress={() => navigation.navigate(cat.screen)}
           >
             <Ionicons name={cat.icon as any} size={22} color="#f97316" />
             <Text style={styles.categoryText}>{cat.name}</Text>
@@ -334,11 +343,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   logo: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginRight: 10,
-    color: '#f97316',
+    width: 144,
+    height: 100,
+    resizeMode: 'contain',
+    alignSelf: 'center',
   },
+topControls: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
   logoAccent: {
     color: '#ea580c',
   },
@@ -357,7 +371,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   greeting: {
-    marginTop: 16,
+    
   },
   greetingText: {
     fontSize: 22,
