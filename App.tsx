@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { StyleSheet, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -12,14 +11,14 @@ import MealScreen from './src/screen/MealScreen';
 import VeganScreen from './src/screen/VeganScreen';
 import DessertScreen from './src/screen/DessertScreen';
 import DrinksScreen from './src/screen/DrinksScreen';
+import OrderManagementScreen from './src/screen/OrderManagementScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-     
-      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signin" component={SigninScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
@@ -28,12 +27,11 @@ export default function App() {
         <Stack.Screen name="Vegan" component={VeganScreen} />
         <Stack.Screen name="Dessert" component={DessertScreen} />
         <Stack.Screen name="Drinks" component={DrinksScreen} />
+        <Stack.Screen name="Orders" component={OrderManagementScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
-};
-
-
+}
 
 const styles = StyleSheet.create({
   container: {
