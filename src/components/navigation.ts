@@ -2,7 +2,7 @@ import { Order } from '../screen/OrderDetailScreen';
 export type RootStackParamList = {
   Login: undefined;
   Signin: undefined;
-  Home: undefined;
+  Main: undefined;
   Snack: undefined;
   Meal: undefined;
   Vegan: undefined;

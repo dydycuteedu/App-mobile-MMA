@@ -10,7 +10,6 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const categories = [
   { name: 'Snacks', icon: 'fast-food-outline', screen: 'Snack' },
@@ -78,7 +77,6 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
       </ScrollView>
-      <Footer/>
     </View>
   );
 };

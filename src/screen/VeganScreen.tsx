@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';  
 import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
@@ -85,7 +84,6 @@ const VeganScreen = () => {
   ))}
 </ScrollView>
 
-      <Footer/>
     </View>
   );
 };
