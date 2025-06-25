@@ -56,7 +56,7 @@ const drinks = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/popcorn-milkshake.jpg'),
+    image: require('../../assets/popcorn-milkshake.png'),
   },
 ];
 

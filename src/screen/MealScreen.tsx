@@ -20,7 +20,7 @@ const meals = [
     tag: 'HOT',
     price: 15.0,
     description: 'Fried chicken with rice and egg',
-    image: require('../../assets/katsu-donburi.jpg'),
+    image: require('../../assets/katsu-donburi.png'),
   },
   {
     id: '2',
@@ -38,7 +38,7 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/chicken.jpg'),
+    image: require('../../assets/chicken.png'),
   },
   {
     id: '4',
@@ -47,7 +47,7 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/taco.jpg'),
+    image: require('../../assets/taco.png'),
   },
   {
     id: '5',
@@ -56,7 +56,7 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/bolognese.jpg'),
+    image: require('../../assets/bolognese.png'),
   },
   {
     id: '6',
@@ -74,7 +74,7 @@ const meals = [
     price: 12.99,
     description:
       'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/pad-thai.jpg'),
+    image: require('../../assets/pad-thai.png'),
   }
 ];
 
