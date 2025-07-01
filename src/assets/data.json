@@ -122,7 +122,7 @@
 
   "orders": [
     {
-      "id": "o1",
+      "id": "1",
       "customerId": "u1",
       "restaurantId": "u2",
       "items": [
@@ -133,7 +133,7 @@
       "status": "pending"
     },
     {
-      "id": "o2",
+      "id": "2",
       "customerId": "u1",
       "restaurantId": "u3",
       "items": [
