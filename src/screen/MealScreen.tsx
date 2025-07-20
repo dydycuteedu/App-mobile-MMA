@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,87 +6,42 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
-
-const meals = [
-  {
-    id: '1',
-    name: 'Katsu Donburi',
-    tag: 'HOT',
-    price: 15.0,
-    description: 'Fried chicken with rice and egg',
-    image: require('../../assets/katsu-donburi.png'),
-  },
-  {
-    id: '2',
-    name: 'Burger',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/burger.png'),
-  },
-  {
-    id: '3',
-    name: 'Sesame Chicken',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/chicken.png'),
-  },
-  {
-    id: '4',
-    name: 'Taco',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/taco.png'),
-  },
-  {
-    id: '5',
-    name: 'Bolognese Pasta',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/bolognese.png'),
-  },
-  {
-    id: '6',
-    name: 'Pizza',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/pizza.png'),
-  },
-  {
-    id: '7',
-    name: 'Pad Thai',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/pad-thai.png'),
-  }
-];
+import { RootStackParamList } from '../components/navigation';
+import { getFoodsByCategory } from '../api/foodAPI';
+import { Food } from '../dataTypes/foodTypes';
 
 type MealScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Meal'>;
-const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
 
 const MealScreen = () => {
-  
   const navigation = useNavigation<MealScreenNavigationProp>();
+  const [veganFoods, setMealFoods] = useState<Food[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMealFoods = async () => {
+      try {
+        const data = await getFoodsByCategory('Meal');
+        setMealFoods(data);
+        console.log('Fetched meals:', data);
+      } catch (error) {
+        console.error('Failed to fetch meals:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMealFoods();
+  }, []);
+
   return (
     <View style={styles.container}>
-        <Header />
+      <Header />
 
       {/* Sort Bar */}
       <View style={styles.sortBar}>
@@ -95,37 +50,42 @@ const MealScreen = () => {
         <Ionicons name="chevron-down" size={16} color="#444" />
       </View>
 
-      {/* Meal Cards */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-  {meals.map(meal => (
-    <View key={meal.id} style={styles.card}>
-      <Image source={meal.image} style={styles.image} />
-      <View style={styles.cardContent}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>{meal.name}</Text>
-          <View style={styles.tag}>
-            <Text style={styles.tagText}>{meal.tag}</Text>
-          </View>
-        </View>
-        <Text style={styles.price}>${meal.price.toFixed(2)}</Text>
-        <Text style={styles.description}>{meal.description}</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#f97316" />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+          {veganFoods.map((vegan) => (
+            <View key={vegan.id} style={styles.card}>
+              <Image source={{ uri: vegan.image }} style={styles.image} />
+              <View style={styles.cardContent}>
+                <View style={styles.titleRow}>
+                  <Text style={styles.title}>{vegan.name}</Text>
+                  {vegan.tag && (
+                    <View style={styles.tag}>
+                      <Text style={styles.tagText}>{vegan.tag}</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={styles.price}>${vegan.price}</Text>
+                <Text style={styles.description}>{vegan.description}</Text>
 
-        {/* 👇 Detail Button */}
-        <TouchableOpacity
-          style={styles.detailButton}
-          onPress={() => navigation.navigate('Detail', { item: meal })}>
-          <Text style={styles.detailButtonText}>View Details</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  ))}
-</ScrollView>
-
+                <TouchableOpacity
+                  style={styles.detailButton}
+                  onPress={() => navigation.navigate('Detail', { item: vegan })}
+                >
+                  <Text style={styles.detailButtonText}>View Details</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
 
 export default MealScreen;
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff'},

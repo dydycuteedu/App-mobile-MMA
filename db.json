@@ -28,7 +28,7 @@
       "description": "Tortilla Chips with Toppings",
       "price": "15.00",
       "category": "Snacks",
-      "isAvailable": true
+      "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220"
     },
     {
       "id": 2,
@@ -36,7 +36,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Snacks",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2021/04/06/14/38/pizza-6156566_640.jpg"
     },
     {
       "id": 3,
@@ -44,7 +44,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Snacks",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2022/06/23/09/38/chicken-7279387_960_720.jpg"
     },
     {
       "id": 4,
@@ -52,7 +52,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Snacks",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2015/11/02/20/27/taco-1018962_960_720.jpg"
     },
     {
       "id": 5,
@@ -60,7 +60,7 @@
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
       "category": "Vegan",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2017/11/29/17/38/quinoa-2986706_1280.jpg"
     },
     {
       "id": 6,
@@ -68,7 +68,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Vegan",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2022/02/12/21/22/toast-7009956_1280.jpg"
     },
     {
       "id": 7,
@@ -76,7 +76,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Vegan",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2016/10/31/18/23/salad-1786327_960_720.jpg"
     },
     {
       "id": 8,
@@ -84,7 +84,7 @@
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
       "category": "Meal",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2020/02/17/03/52/don-katsu-4855353_960_720.jpg"
     },
     {
       "id": 9,
@@ -92,7 +92,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Meal",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2021/10/11/09/04/pasta-and-potatoes-6699892_960_720.jpg"
     },
     {
       "id": 10,
@@ -100,7 +100,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Meal",
-      "isAvailable": true
+      "image": "https://cdn.pixabay.com/photo/2021/10/30/12/49/thai-food-6754240_960_720.jpg"
     },
     {
       "id": 11,
@@ -108,7 +108,7 @@
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
       "category": "Drinks",
-      "isAvailable": true
+      "image": "https://tse3.mm.bing.net/th/id/OIP.X2KWzuxUnEKP6Xpuw5gxOwHaE8?pid=Api&P=0&h=220"
     },
     {
       "id": 12,
@@ -116,7 +116,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Drinks",
-      "isAvailable": true
+      "image": "https://senchateabar.com/cdn/shop/articles/5d8a366133b3d4ae8ccbd8f2_PS6m4tTs1TY_RCmkOoBSYfRz4OLkCDcM68U3Y6DzMoLK4X3WTOovYCxRk9if4gVHjWLQ57awCpQCXFJaZhSF80GjQuaD52uXT_8eJMEh8ai7FGJR_ncxxUb-kJPoXcy2p-TPr5lL_1200x1200.jpg?v=1597175650"
     },
     {
       "id": 13,
@@ -124,7 +124,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Drinks",
-      "isAvailable": true
+      "image": "https://i.pinimg.com/736x/de/9c/c6/de9cc63b87edbd94f3a253a75dd8087f.jpg"
     },
     {
       "id": 14,
@@ -132,7 +132,7 @@
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
       "category": "Dessert",
-      "isAvailable": true
+      "image": "https://homepressurecooking.com/wp-content/uploads/2025/01/apple-pie-recipe-1738078701.jpg"
     },
     {
       "id": 15,
@@ -140,7 +140,7 @@
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Dessert",
-      "isAvailable": true
+      "image": "https://tse1.mm.bing.net/th/id/OIP.ff8db0R2tLf4J-u6ceNSvAHaHa?pid=Api&P=0&h=220"
     }
   ],
   "orders": [
@@ -190,6 +190,5 @@
       "discount": "15%",
       "validUntil": "2025-08-01"
     }
-  ],
-  "categories": ["Snacks", "Meal", "Vegan", "Dessert", "Drinks"]
+  ]
 }
