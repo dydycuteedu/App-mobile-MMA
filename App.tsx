@@ -19,11 +19,14 @@ import AdminScreen from "./src/screen/AdminScreen";
 import FoodManagementScreen from "./src/screen/FoodManagementScreen";
 import PromotionManagementScreen from "./src/screen/PromotionManagementScreen";
 import UserManagementScreen from "./src/screen/UserManagementScreen";
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }} >
         <Stack.Screen name="Login" component={LoginScreen} />
@@ -42,5 +45,6 @@ export default function App() {
         <Stack.Screen name="UserManagement" component={UserManagementScreen} options={{ title: "Quản lý Người dùng" }}/>
        </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }

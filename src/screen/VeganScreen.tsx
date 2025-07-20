@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,50 +6,42 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';  
-import { RootStackParamList } from '../components/navigation'; // Adjust the import path as needed
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../components/navigation';
+import { getFoodsByCategory } from '../api/foodAPI';
+import { Food } from '../dataTypes/foodTypes';
 
-const vegans = [
-  {
-    id: '1',
-    name: 'Quinoa Salad',
-    tag: 'HOT',
-    price: 15.0,
-    description: 'Fried chicken with rice and egg',
-    image: require('../../assets/vegan-quinoa.png'),
-  },
-  {
-    id: '2',
-    name: 'Avocado Toast',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/vegan-toast.png'),
-  },
-  {
-    id: '3',
-    name: 'Vegan Salad',
-    tag: 'HOT',
-    price: 12.99,
-    description:
-      'Marinated in herbs and spices, grilled to perfection, served with a rich dip.',
-    image: require('../../assets/salad.png'),
-  }
-];
-
-const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
 type VeganScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Vegan'>;
 
 const VeganScreen = () => {
   const navigation = useNavigation<VeganScreenNavigationProp>();
+  const [veganFoods, setVeganFoods] = useState<Food[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchVeganFoods = async () => {
+      try {
+        const data = await getFoodsByCategory('Vegan');
+        setVeganFoods(data);
+        console.log('Fetched vegan foods:', data);
+      } catch (error) {
+        console.error('Failed to fetch vegan foods:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVeganFoods();
+  }, []);
+
   return (
     <View style={styles.container}>
-        <Header />
+      <Header />
 
       {/* Sort Bar */}
       <View style={styles.sortBar}>
@@ -58,37 +50,42 @@ const VeganScreen = () => {
         <Ionicons name="chevron-down" size={16} color="#444" />
       </View>
 
-      {/* Vegan Cards */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-  {vegans.map(vegan => (
-    <View key={vegan.id} style={styles.card}>
-      <Image source={vegan.image} style={styles.image} />
-      <View style={styles.cardContent}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>{vegan.name}</Text>
-          <View style={styles.tag}>
-            <Text style={styles.tagText}>{vegan.tag}</Text>
-          </View>
-        </View>
-        <Text style={styles.price}>${vegan.price.toFixed(2)}</Text>
-        <Text style={styles.description}>{vegan.description}</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#f97316" />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+          {veganFoods.map((vegan) => (
+            <View key={vegan.id} style={styles.card}>
+              <Image source={{ uri: vegan.image }} style={styles.image} />
+              <View style={styles.cardContent}>
+                <View style={styles.titleRow}>
+                  <Text style={styles.title}>{vegan.name}</Text>
+                  {vegan.tag && (
+                    <View style={styles.tag}>
+                      <Text style={styles.tagText}>{vegan.tag}</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={styles.price}>${vegan.price}</Text>
+                <Text style={styles.description}>{vegan.description}</Text>
 
-        {/* 👇 Detail Button */}
-        <TouchableOpacity
-          style={styles.detailButton}
-          onPress={() => navigation.navigate('Detail', { item: vegan })}>
-          <Text style={styles.detailButtonText}>View Details</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  ))}
-</ScrollView>
-
+                <TouchableOpacity
+                  style={styles.detailButton}
+                  onPress={() => navigation.navigate('Detail', { item: vegan })}
+                >
+                  <Text style={styles.detailButtonText}>View Details</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
 
 export default VeganScreen;
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff'},

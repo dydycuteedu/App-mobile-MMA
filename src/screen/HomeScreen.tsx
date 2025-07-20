@@ -1,57 +1,74 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image
+  Image,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
-
-const categories = [
-  { name: 'Snacks', icon: 'fast-food-outline', screen: 'Snack' },
-  { name: 'Meal', icon: 'restaurant-outline', screen: 'Meal' },
-  { name: 'Vegan', icon: 'leaf-outline', screen: 'Vegan' },
-  { name: 'Dessert', icon: 'ice-cream-outline', screen: 'Dessert' },
-  { name: 'Drinks', icon: 'cafe-outline', screen: 'Drinks' }
-  
-  
-];
-
-const bestSellers = [
-  { name: 'Burger', price: '$10.00', image: require('../../assets/burger.png') },
-  { name: 'Salad', price: '$12.00', image: require('../../assets/burger.png') },
-  { name: 'Yogurt', price: '$8.20', image: require('../../assets/burger.png') }
-];
-
-const recommended = [
-  { name: 'Cheeseburger', price: '$9.99', image: require('../../assets/burger.png') },
-  { name: 'Spring Rolls', price: '$6.50', image: require('../../assets/burger.png') }
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllFoods } from '../redux/foodSlice';
+import { RootState } from '../redux/store';
+import { Food } from '../dataTypes/foodTypes';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const allFoods = useSelector((state: RootState) => state.foods.allFoods);
+  const status = useSelector((state: RootState) => state.foods.status);
+
+  useEffect(() => {
+    dispatch(fetchAllFoods());  //Error no affect
+  }, [dispatch]);
+
+  const getBestSellers = (): Food[] => {
+    const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
+    let result: Food[] = [];
+    categories.forEach((cat) => {
+      const foodsInCat = allFoods.filter((f) => f.category === cat);
+      result = result.concat(foodsInCat.slice(0, 2));
+    });
+    return result;
+  };
+
+  const getRecommended = (): Food[] => {
+    const categories = ['Snacks', 'Meal', 'Vegan', 'Dessert', 'Drinks'];
+    let result: Food[] = [];
+    categories.forEach((cat) => {
+      const foodsInCat = allFoods
+        .filter((f) => f.category === cat)
+        .sort((a, b) => b.price - a.price);
+      result = result.concat(foodsInCat.slice(0, 2));
+    });
+    return result;
+  };
+
+  const bestSellers = getBestSellers();
+  const recommended = getRecommended();
 
   return (
     <View style={styles.container}>
-      <Header/>
+      <Header />
 
       {/* Best Seller Section */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Best Seller</Text>
-          <TouchableOpacity><Text style={styles.viewAll}>View All</Text></TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.viewAll}>View All</Text>
+          </TouchableOpacity>
         </View>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {bestSellers.map((item, index) => (
-            <View key={index} style={styles.card}>
-              <Image source={item.image} style={styles.cardImage} />
+          {bestSellers.map((item) => (
+            <View key={item.id} style={styles.card}>
+              <Image source={{ uri: item.image }} style={styles.cardImage} />
               <Text style={styles.cardText}>{item.name}</Text>
-              <Text style={styles.cardPrice}>{item.price}</Text>
+              <Text style={styles.cardPrice}>${item.price}</Text>
             </View>
           ))}
         </ScrollView>
@@ -61,18 +78,24 @@ const HomeScreen = () => {
       <View style={styles.promoBanner}>
         <Text style={styles.promoText}>Experience our delicious new dish</Text>
         <Text style={styles.promoDiscount}>30% OFF</Text>
-        <Image source={require('../../assets/burger.png')} style={styles.promoImage} />
+        <Image
+          source={require('../../assets/burger.png')}
+          style={styles.promoImage}
+        />
       </View>
 
       {/* Recommended Section */}
-      <ScrollView style={styles.section} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView
+        style={styles.section}
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
         <Text style={styles.sectionTitle}>Recommend</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {recommended.map((item, index) => (
-            <View key={index} style={styles.card}>
-              <Image source={item.image} style={styles.cardImage} />
+          {recommended.map((item) => (
+            <View key={item.id} style={styles.card}>
+              <Image source={{ uri: item.image }} style={styles.cardImage} />
               <Text style={styles.cardText}>{item.name}</Text>
-              <Text style={styles.cardPrice}>{item.price}</Text>
+              <Text style={styles.cardPrice}>${item.price}</Text>
             </View>
           ))}
         </ScrollView>
@@ -82,7 +105,7 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff'},
+  container: { flex: 1, backgroundColor: '#fff' },
   categories: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -90,7 +113,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 20,
     marginHorizontal: 10,
-    marginBottom: 15
+    marginBottom: 15,
   },
   categoryItem: { alignItems: 'center' },
   categoryText: { fontSize: 12, marginTop: 5, color: '#333' },
@@ -99,7 +122,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10
+    marginBottom: 10,
   },
   sectionTitle: { fontSize: 18, fontWeight: 'bold' },
   viewAll: { color: '#f97316', fontSize: 14 },
@@ -110,23 +133,23 @@ const styles = StyleSheet.create({
     marginRight: 15,
     borderRadius: 15,
     padding: 10,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   cardImage: {
     width: 80,
     height: 80,
     borderRadius: 10,
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   cardText: {
     marginTop: 8,
     fontWeight: 'bold',
-    fontSize: 14
+    fontSize: 14,
   },
   cardPrice: {
     color: '#f97316',
     fontWeight: 'bold',
-    fontSize: 13
+    fontSize: 13,
   },
 
   promoBanner: {
@@ -137,7 +160,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     position: 'relative',
     overflow: 'hidden',
-    marginBottom: 25
+    marginBottom: 25,
   },
   promoText: { fontSize: 16, color: '#333', marginBottom: 5 },
   promoDiscount: { fontSize: 26, color: '#dc2626', fontWeight: 'bold' },
@@ -147,8 +170,8 @@ const styles = StyleSheet.create({
     top: 10,
     width: 120,
     height: 120,
-    resizeMode: 'contain'
-  }
+    resizeMode: 'contain',
+  },
 });
 
 export default HomeScreen;
