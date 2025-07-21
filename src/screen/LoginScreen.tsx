@@ -11,24 +11,28 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../components/navigation"; // Update with your actual path
-import AdminScreen from "./AdminScreen";
-import HomeScreen from "./HomeScreen";
+
+// ===================================================================
+// ĐỊA CHỈ IP MỚI CỦA CẬU ĐÃ ĐƯỢC CẬP NHẬT
+const YOUR_COMPUTER_IP = '192.168.10.67';
+// ===================================================================
 
 export default function LoginScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); // State này sẽ chứa email
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert("Error", "Please enter both email and password");
+      Alert.alert("Lỗi", "Vui lòng nhập email và mật khẩu");
       return;
     }
 
     try {
+      // API call đã được cập nhật với IP đúng
       const response = await fetch(
-        `http://192.168.0.11:3000/users?email=${username}&password=${password}`
+        `http://${YOUR_COMPUTER_IP}:3000/users?email=${username}&password=${password}`
       );
       const data = await response.json();
 
@@ -36,23 +40,24 @@ export default function LoginScreen() {
         const user = data[0];
 
         if (user.isBanned) {
-          Alert.alert("Access Denied", "Your account has been banned.");
+          Alert.alert("Truy cập bị từ chối", "Tài khoản của bạn đã bị khóa.");
           return;
-        } // Điều hướng dựa trên role
+        }
 
+        // Điều hướng dựa trên vai trò (role)
         if (user.role === "admin") {
           navigation.navigate("Admin");
         } else if (user.role === "customer") {
           navigation.navigate("Main");
         } else {
-          Alert.alert("Unknown role", "User role is not recognized.");
+          Alert.alert("Vai trò không xác định", "Vai trò người dùng không được nhận dạng.");
         }
       } else {
-        Alert.alert("Login Failed", "Invalid email or password");
+        Alert.alert("Đăng nhập thất bại", "Email hoặc mật khẩu không hợp lệ");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      Alert.alert("Error", "Cannot connect to server");
+      console.error("Lỗi đăng nhập:", error);
+      Alert.alert("Lỗi", "Không thể kết nối đến server. Hãy đảm bảo server đang chạy và IP đã đúng.");
     }
   };
 
@@ -73,9 +78,11 @@ export default function LoginScreen() {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.textInput}
-          placeholder="Username"
+          placeholder="Email"
           value={username}
           onChangeText={setUsername}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
       </View>
 
