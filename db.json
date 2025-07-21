@@ -19,11 +19,21 @@
       "phone": "0907654321",
       "role": "admin",
       "isBanned": false
+    },
+    {
+      "id": "1753087563245",
+      "name": "dy",
+      "email": "cdy@gmail.com",
+      "password": "1",
+      "address": "N/A",
+      "phone": "0905443128",
+      "role": "customer",
+      "isBanned": false
     }
   ],
   "foods": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Burger",
       "description": "Tortilla Chips with Toppings",
       "price": "15.00",
@@ -31,7 +41,7 @@
       "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Pizza",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -39,7 +49,7 @@
       "image": "https://cdn.pixabay.com/photo/2021/04/06/14/38/pizza-6156566_640.jpg"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Sesame Chicken",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -47,7 +57,7 @@
       "image": "https://cdn.pixabay.com/photo/2022/06/23/09/38/chicken-7279387_960_720.jpg"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Taco",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -55,7 +65,7 @@
       "image": "https://cdn.pixabay.com/photo/2015/11/02/20/27/taco-1018962_960_720.jpg"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Quinoa Salad",
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
@@ -63,7 +73,7 @@
       "image": "https://cdn.pixabay.com/photo/2017/11/29/17/38/quinoa-2986706_1280.jpg"
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Avocado Toast",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -71,7 +81,7 @@
       "image": "https://cdn.pixabay.com/photo/2022/02/12/21/22/toast-7009956_1280.jpg"
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Vegan Salad",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -79,7 +89,7 @@
       "image": "https://cdn.pixabay.com/photo/2016/10/31/18/23/salad-1786327_960_720.jpg"
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "Katsu Donburi",
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
@@ -87,7 +97,7 @@
       "image": "https://cdn.pixabay.com/photo/2020/02/17/03/52/don-katsu-4855353_960_720.jpg"
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Bolognese Pasta",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -95,7 +105,7 @@
       "image": "https://cdn.pixabay.com/photo/2021/10/11/09/04/pasta-and-potatoes-6699892_960_720.jpg"
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "Pad Thai",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -103,7 +113,7 @@
       "image": "https://cdn.pixabay.com/photo/2021/10/30/12/49/thai-food-6754240_960_720.jpg"
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "Blueberry Tea",
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
@@ -111,7 +121,7 @@
       "image": "https://tse3.mm.bing.net/th/id/OIP.X2KWzuxUnEKP6Xpuw5gxOwHaE8?pid=Api&P=0&h=220"
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Green Tea",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -119,7 +129,7 @@
       "image": "https://senchateabar.com/cdn/shop/articles/5d8a366133b3d4ae8ccbd8f2_PS6m4tTs1TY_RCmkOoBSYfRz4OLkCDcM68U3Y6DzMoLK4X3WTOovYCxRk9if4gVHjWLQ57awCpQCXFJaZhSF80GjQuaD52uXT_8eJMEh8ai7FGJR_ncxxUb-kJPoXcy2p-TPr5lL_1200x1200.jpg?v=1597175650"
     },
     {
-      "id": 13,
+      "id": "13",
       "name": "Caramel Popcorn Milkshake",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -127,7 +137,7 @@
       "image": "https://i.pinimg.com/736x/de/9c/c6/de9cc63b87edbd94f3a253a75dd8087f.jpg"
     },
     {
-      "id": 14,
+      "id": "14",
       "name": "Apple Pie",
       "description": "Fried chicken with rice and egg",
       "price": "15.00",
@@ -135,7 +145,7 @@
       "image": "https://homepressurecooking.com/wp-content/uploads/2025/01/apple-pie-recipe-1738078701.jpg"
     },
     {
-      "id": 15,
+      "id": "15",
       "name": "Strawberry Cheesecake",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
@@ -152,8 +162,14 @@
       "date": "2025-07-18",
       "items": 2,
       "itemsList": [
-        { "name": "Pizza", "price": "12.99" },
-        { "name": "Matcha", "price": "12.99" }
+        {
+          "name": "Pizza",
+          "price": "12.99"
+        },
+        {
+          "name": "Matcha",
+          "price": "12.99"
+        }
       ],
       "subtotal": "25.98",
       "tax": "2.60",
@@ -184,7 +200,7 @@
   ],
   "promotions": [
     {
-      "id": 1,
+      "id": "1",
       "code": "SUMMER15",
       "description": "15% off all items",
       "discount": "15%",
