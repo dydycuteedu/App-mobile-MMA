@@ -7,10 +7,14 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  Alert,
 } from "react-native";
-import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type RootStackParamList = {
   Login: undefined;
@@ -19,7 +23,8 @@ type RootStackParamList = {
 };
 
 export default function SigninScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [dob, setDob] = useState<Date>(new Date(2000, 0, 1));
   const [showPicker, setShowPicker] = useState(false);
   const [username, setUsername] = useState("");
@@ -30,6 +35,54 @@ export default function SigninScreen() {
   const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     setShowPicker(false);
     if (selectedDate) setDob(selectedDate);
+  };
+
+  const handleSignup = async () => {
+    if (!username || !password || !email || !mobile) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://192.168.0.11:3000/users");
+      const users = await res.json();
+
+      const emailExists = users.some((user: any) => user.email === email);
+      if (emailExists) {
+        Alert.alert("Error", "Email already exists.");
+        return;
+      }
+
+      const newUser = {
+        id: Date.now().toString(),
+        name: username,
+        email,
+        password,
+        address: "N/A",
+        phone: mobile,
+        role: "customer",
+        isBanned: false,
+      };
+
+      const response = await fetch("http://192.168.0.11:3000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (response.ok) {
+        await AsyncStorage.setItem("user", JSON.stringify(newUser));
+        Alert.alert("Success", "Signup successful!");
+        navigation.navigate("Login");
+      } else {
+        Alert.alert("Error", "Signup failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      Alert.alert("Error", "Network error. Cannot connect to server.");
+    }
   };
 
   return (
@@ -44,7 +97,6 @@ export default function SigninScreen() {
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>New member</Text>
       </View>
-
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.textInput}
@@ -78,7 +130,9 @@ export default function SigninScreen() {
           onChangeText={setMobile}
           keyboardType="phone-pad"
         />
+       
       </View>
+    
       <View style={styles.inputContainer}>
         <TouchableOpacity
           onPress={() => setShowPicker(true)}
@@ -95,14 +149,10 @@ export default function SigninScreen() {
             maximumDate={new Date()}
           />
         )}
+    
       </View>
-      <View>
-        <Text>by continue....</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={() => navigation.navigate("Main")}
-      >
+      <Text>By continuing, you agree to our terms.</Text>
+      <TouchableOpacity style={styles.loginButton} onPress={handleSignup}>
         <Text style={styles.buttonText}>Sign in</Text>
       </TouchableOpacity>
     </View>
@@ -168,24 +218,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
+    marginTop: 10,
   },
   buttonText: {
     fontSize: 18,
     color: "black",
-    fontWeight: "bold",
-  },
-  signupContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  normalText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  signupText: {
-    fontSize: 16,
-    color: "#FFEEA9",
     fontWeight: "bold",
   },
   dateTouchable: {
