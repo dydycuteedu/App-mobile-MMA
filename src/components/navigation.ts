@@ -1,4 +1,4 @@
-import { Order } from '../screen/OrderDetailScreen';
+import { Order } from "../screen/OrderDetailScreen";
 export type RootStackParamList = {
   Login: undefined;
   Signin: undefined;
@@ -10,7 +10,7 @@ export type RootStackParamList = {
   Drinks: undefined;
   MyOrderScreen: undefined;
   AccountScreen: undefined;
-  LoginScreen: undefined;
+  Admin: undefined;
   OrderDetailScreen: { order: Order };
   LiveTrackingScreen: { order: Order };
   ReviewScreen: { order: Order };

@@ -6,15 +6,55 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from '../components/navigation'; // <-- use shared type
+import { RootStackParamList } from "../components/navigation"; // Update with your actual path
+import AdminScreen from "./AdminScreen";
+import HomeScreen from "./HomeScreen";
 
 export default function LoginScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://192.168.0.11:3000/users?email=${username}&password=${password}`
+      );
+      const data = await response.json();
+
+      if (data.length > 0) {
+        const user = data[0];
+
+        if (user.isBanned) {
+          Alert.alert("Access Denied", "Your account has been banned.");
+          return;
+        } // Điều hướng dựa trên role
+
+        if (user.role === "admin") {
+          navigation.navigate("Admin");
+        } else if (user.role === "customer") {
+          navigation.navigate("Main");
+        } else {
+          Alert.alert("Unknown role", "User role is not recognized.");
+        }
+      } else {
+        Alert.alert("Login Failed", "Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      Alert.alert("Error", "Cannot connect to server");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -25,31 +65,31 @@ export default function LoginScreen() {
           resizeMode="contain"
         />
       </View>
+
       <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>Welcome to out food</Text>
+        <Text style={styles.welcomeText}>Welcome to our food</Text>
       </View>
 
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.textInput}
-          placeholder=" username"
+          placeholder="Username"
           value={username}
           onChangeText={setUsername}
         />
       </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.textInput}
-          placeholder=" password"
+          placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
       </View>
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={() => navigation.navigate("Main")}
-      >
+
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
