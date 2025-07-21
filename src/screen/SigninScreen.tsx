@@ -22,6 +22,13 @@ type RootStackParamList = {
   Main: undefined;
 };
 
+// ===================================================================
+// ĐỊA CHỈ IP MỚI CỦA CẬU ĐÃ ĐƯỢC CẬP NHẬT
+const YOUR_COMPUTER_IP = '192.168.10.67';
+// ===================================================================
+
+const API_URL = `http://${YOUR_COMPUTER_IP}:3000/users`;
+
 export default function SigninScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -39,17 +46,17 @@ export default function SigninScreen() {
 
   const handleSignup = async () => {
     if (!username || !password || !email || !mobile) {
-      Alert.alert("Error", "Please fill in all fields.");
+      Alert.alert("Lỗi", "Vui lòng điền đầy đủ thông tin.");
       return;
     }
 
     try {
-      const res = await fetch("http://192.168.0.11:3000/users");
+      const res = await fetch(API_URL);
       const users = await res.json();
 
       const emailExists = users.some((user: any) => user.email === email);
       if (emailExists) {
-        Alert.alert("Error", "Email already exists.");
+        Alert.alert("Lỗi", "Email này đã tồn tại.");
         return;
       }
 
@@ -64,7 +71,7 @@ export default function SigninScreen() {
         isBanned: false,
       };
 
-      const response = await fetch("http://192.168.0.11:3000/users", {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,14 +81,14 @@ export default function SigninScreen() {
 
       if (response.ok) {
         await AsyncStorage.setItem("user", JSON.stringify(newUser));
-        Alert.alert("Success", "Signup successful!");
+        Alert.alert("Thành công", "Đăng ký thành công!");
         navigation.navigate("Login");
       } else {
-        Alert.alert("Error", "Signup failed. Please try again.");
+        Alert.alert("Lỗi", "Đăng ký thất bại. Vui lòng thử lại.");
       }
     } catch (error) {
-      console.error("Signup error:", error);
-      Alert.alert("Error", "Network error. Cannot connect to server.");
+      console.error("Lỗi đăng ký:", error);
+      Alert.alert("Lỗi", "Lỗi mạng. Không thể kết nối đến server.");
     }
   };
 
@@ -120,6 +127,8 @@ export default function SigninScreen() {
           placeholder=" email"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
       </View>
       <View style={styles.inputContainer}>

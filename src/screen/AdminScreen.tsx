@@ -20,6 +20,7 @@ export default function AdminScreen({ navigation }: Props) {
   const foodAnim = createAnimated();
   const promoAnim = createAnimated();
   const userAnim = createAnimated();
+  const orderAnim = createAnimated(); // <-- ĐÃ THÊM
 
   const animateIn = (anim: Animated.Value) => {
     Animated.spring(anim, {
@@ -98,6 +99,19 @@ export default function AdminScreen({ navigation }: Props) {
               style={[styles.menuButton, { transform: [{ scale: userAnim }] }]}
             >
               <Text style={styles.menuText}>User Management</Text>
+            </Animated.View>
+          </Pressable>
+
+          {/* 👇 NÚT MỚI ĐÃ ĐƯỢC THÊM VÀO ĐÂY */}
+          <Pressable
+            onPress={() => navigation.navigate("OrderManagement")}
+            onPressIn={() => animateIn(orderAnim)}
+            onPressOut={() => animateOut(orderAnim)}
+          >
+            <Animated.View
+              style={[styles.menuButton, { transform: [{ scale: orderAnim }] }]}
+            >
+              <Text style={styles.menuText}>Order Management</Text>
             </Animated.View>
           </Pressable>
         </View>
