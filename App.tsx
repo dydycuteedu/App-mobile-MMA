@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { CartProvider } from './src/screen/CartContext';
 import DeliveryAddressScreen from "./src/screen/DeliveryAddressScreen";
 import PaymentMethodScreen from "./src/screen/PaymentMethodScreen";
-
+import ProfileScreen from "./src/screen/ProfileScreen";
 import LoginScreen from './src/screen/LoginScreen';
 import SigninScreen from './src/screen/SigninScreen';
 import TabNavigator from './src/components/Footer';
@@ -36,6 +36,7 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signin" component={SigninScreen} />
         <Stack.Screen name="Main" component={TabNavigator} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen name="MyOrderScreen" component={MyOrdersScreen} />
         <Stack.Screen name="OrderDetailScreen" component={OrderDetailScreen} />
         <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
