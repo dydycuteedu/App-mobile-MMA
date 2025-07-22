@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,27 @@ import {
   Alert
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Order } from './OrderDetailScreen';
 import { RootStackParamList } from '../navigation/types';
-import LiveTrackingScreen from './LiveTrackingScreen';
+import { getOrdersByUser, updateOrderStatus } from '../api/orderApi';
+import { useFocusEffect } from '@react-navigation/native';
+
+export interface Order {
+  id: string;
+  customerId: string;
+  name: string;
+  price: string;
+  date: string;
+  items: string;
+  status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+  image: string;
+  orderNumber: string;
+  subtotal: string;
+  tax: string;
+  deliveryFee: string;
+  total: string;
+  itemsList: { name: string; price: string }[];
+  deliveryTime?: string | Date;
+}
 
 type MyOrdersScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MyOrderScreen'>;
 
@@ -32,7 +50,7 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState<string>('Active');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [cancelReasons, setCancelReasons] = useState({
     reason1: false,
     reason2: false,
@@ -42,188 +60,37 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
     otherReason: false,
   });
   const [otherReasonText, setOtherReasonText] = useState('');
-  const [orders, setOrders] = useState<OrderState>({
-    active: [
-      {
-        id: 1,
-        name: 'Matcha',
-        price: '$20.00',
-        date: '17 Oct, 01:20 pm',
-        items: '1 item',
-        image: require('../../assets/green-tea.png'),
-        orderNumber: '0054752',
-        subtotal: '$32.00',
-        tax: '$5.00',
-        deliveryFee: '$3.00',
-        total: '$40.00',
-        itemsList: [
-          { name: 'Strawberry Shake', price: '$20.00' },
-          { name: 'Broccoli Lasagna', price: '$12.00' }
-        ]
-      },
-      {
-        id: 2,
-        name: 'Sesame Chicken',
-        price: '$20.00',
-        date: '17 Oct, 01:20 pm',
-        items: '1 item',
-        image: require('../../assets/chicken.png'),
-        orderNumber: '0054753',
-        subtotal: '$20.00',
-        tax: '$3.00',
-        deliveryFee: '$3.00',
-        total: '$26.00',
-        itemsList: [
-          { name: 'Sesame Chicken', price: '$20.00' }
-        ]
-      },
-      {
-        id: 3,
-        name: 'Coffee Flavored Ice Cream',
-        price: '$20.00',
-        date: '22 Apr, 01:20 pm',
-        items: '2 items',
-        image: require('../../assets/coffee-icecream.png'),
-        orderNumber: '0054754',
-        subtotal: '$40.00',
-        tax: '$6.00',
-        deliveryFee: '$3.00',
-        total: '$49.00',
-        itemsList: [
-          { name: 'Coffee Flavored Ice Cream', price: '$20.00' },
-          { name: 'Extra Topping', price: '$20.00' }
-        ]
-      },
-      {
-        id: 4,
-        name: 'Strawberry Cheesecake',
-        price: '$20.00',
-        date: '29 Nov, 01:20 pm',
-        items: '1 item',
-        image: require('../../assets/strawberry-cheesecake.png'),
-        orderNumber: '0054755',
-        subtotal: '$20.00',
-        tax: '$3.00',
-        deliveryFee: '$3.00',
-        total: '$26.00',
-        itemsList: [
-          { name: 'Strawberry Cheesecake', price: '$20.00' }
-        ]
-      }
-    ],
-    completed: [
-      {
-        id: 6,
-        name: 'Pizza',
-        price: '$50.00',
-        date: '29 Nov, 01:20 pm',
-        items: '2 items',
-        status: 'Order delivered',
-        image: require('../../assets/pizza.png'),
-        orderNumber: '0054756',
-        subtotal: '$50.00',
-        tax: '$7.50',
-        deliveryFee: '$3.00',
-        total: '$60.50',
-        itemsList: [
-          { name: 'Pizza', price: '$50.00' }
-        ]
-      },
-      {
-        id: 7,
-        name: 'Katsu Donburi',
-        price: '$15.0',
-        date: '10 Nov, 06:05 pm',
-        items: '2 items',
-        status: 'Order delivered',
-        image: require('../../assets/katsu-donburi.png'),
-        orderNumber: '0054757',
-        subtotal: '$30.00',
-        tax: '$4.50',
-        deliveryFee: '$3.00',
-        total: '$37.50',
-        itemsList: [
-          { name: 'Katsu Donburi', price: '$15.00' },
-          { name: 'Extra Rice', price: '$15.00' }
-        ]
-      },
-      {
-        id: 8,
-        name: 'Caramel Popcorn Milkshake',
-        price: '$12.99',
-        date: '03 Oct, 03:40 pm',
-        items: '2 items',
-        status: 'Order delivered',
-        image: require('../../assets/popcorn-milkshake.png'),
-        orderNumber: '0054758',
-        subtotal: '$25.98',
-        tax: '$3.90',
-        deliveryFee: '$3.00',
-        total: '$32.88',
-        itemsList: [
-          { name: 'Caramel Popcorn Milkshake', price: '$12.99' },
-          { name: 'Extra Caramel', price: '$12.99' }
-        ]
-      },
-      {
-        id: 9,
-        name: 'Burger',
-        price: '$15.0',
-        date: '30 Oct, 03:40 pm',
-        items: '2 items',
-        status: 'Order delivered',
-        image: require('../../assets/burger.png'),
-        orderNumber: '0054759',
-        subtotal: '$30.00',
-        tax: '$4.50',
-        deliveryFee: '$3.00',
-        total: '$37.50',
-        itemsList: [
-          { name: 'Burger', price: '$15.00' },
-          { name: 'French Fries', price: '$15.00' }
-        ]
-      },
-    ],
-    cancelled: [
-      {
-        id: 10,
-        name: 'Avocado Toast',
-        price: '$12.99',
-        date: '02 Nov, 04:00 pm',
-        items: '3 items',
-        status: 'Order cancelled',
-        image: require('../../assets/vegan-toast.png'),
-        orderNumber: '0054760',
-        subtotal: '$38.97',
-        tax: '$5.85',
-        deliveryFee: '$3.00',
-        total: '$47.82',
-        itemsList: [
-          { name: 'Avocado Toast', price: '$12.99' },
-          { name: 'Extra Avocado', price: '$12.99' },
-          { name: 'Coffee', price: '$12.99' }
-        ]
-      },
-      {
-        id: 11,
-        name: 'Blueberry Tea',
-        price: '$15.00',
-        date: '12 Oct, 03:15 pm',
-        items: '2 items',
-        status: 'Order cancelled',
-        image: require('../../assets/blueberry-tea.png'),
-        orderNumber: '0054761',
-        subtotal: '$30.00',
-        tax: '$4.50',
-        deliveryFee: '$3.00',
-        total: '$37.50',
-        itemsList: [
-          { name: 'Blueberry Tea', price: '$15.00' },
-          { name: 'Honey', price: '$15.00' }
-        ]
-      },
-    ]
-  });
+  const [orders, setOrders] = useState<OrderState>({ active: [], completed: [], cancelled: [] });
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchOrders = async () => {
+        try {
+          const userId = 'u1';
+          const allOrders: Order[] = await getOrdersByUser(userId);
+          const now = new Date();
+          for (const order of allOrders) {
+            if ((order.status === 'Pending' || order.status === 'Confirmed') && order.deliveryTime) {
+              const deliveryTime = new Date(order.deliveryTime);
+              if (deliveryTime < now) {
+                await updateOrderStatus(order.id, 'Completed');
+                order.status = 'Completed';
+              }
+            }
+          }
+          const grouped: OrderState = {
+            active: allOrders.filter(o => o.status === 'Pending' || o.status === 'Confirmed'),
+            completed: allOrders.filter(o => o.status === 'Completed'),
+            cancelled: allOrders.filter(o => o.status === 'Cancelled')
+          };
+          setOrders(grouped);
+        } catch (err) {
+          console.error('Error fetching orders:', err);
+        }
+      };
+      fetchOrders();
+    }, [])
+  );
 
   const getCurrentOrders = (): Order[] => {
     switch (activeTab) {
@@ -234,9 +101,27 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  const handleCancelOrder = (orderId: number) => {
+  const handleCancelOrder = (orderId: string) => {
     setSelectedOrderId(orderId);
     setShowCancelModal(true);
+  };
+
+  const handleOrderAgain = (order: Order) => {
+    // Convert order back to cart items format for PaymentScreen
+    const orderItems = order.itemsList.map((item, index) => ({
+      id: `item_${index}`,
+      name: item.name,
+      price: parseFloat(String(item.price).replace(',', '')),
+      quantity: 1,
+      image: order.image, // Use the order's image for all items
+    }));
+
+    // Navigate to PaymentScreen with order data
+    navigation.navigate('PaymentScreen', {
+      orderItems: orderItems,
+      shippingAddress: '278 Locust View Drive Oakland, CA', // Default address
+      total: parseFloat(order.total),
+    });
   };
 
   const handleReasonToggle = (reason: keyof typeof cancelReasons) => {
@@ -269,24 +154,39 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
     setOtherReasonText('');
   };
 
-  const confirmCancelOrder = (orderId: number) => {
-    const orderToCancel = orders.active.find(order => order.id === orderId);
+  const confirmCancelOrder = async (orderId: string) => {
+    const toCancel = orders.active.find(o => o.id === orderId);
+    if (!toCancel) return;
     
-    if (!orderToCancel) return;
-    
-    const cancelledOrder = {
-      ...orderToCancel,
-      status: 'Order cancelled'
-    };
-    
-    setOrders(prev => ({
-      active: prev.active.filter(order => order.id !== orderId),
-      completed: prev.completed,
-      cancelled: [cancelledOrder, ...prev.cancelled]
-    }));
-    
-    if (activeTab === 'Active') {
-      setActiveTab('Cancelled');
+    try {
+      await updateOrderStatus(orderId, 'Cancelled');
+      const cancelled = { ...toCancel, status: 'Cancelled' as const };
+      setOrders(prev => ({
+        ...prev,
+        active: prev.active.filter(o => o.id !== orderId),
+        cancelled: [cancelled, ...prev.cancelled]
+      }));
+      if (activeTab === 'Active') {
+        setActiveTab('Cancelled');
+      }
+    } catch (error) {
+      console.error('Failed to update order:', error);
+    }
+  };
+
+  const getImageSource = (imageName: string) => {
+    switch (imageName) {
+      case 'green-tea.png': return require('../../assets/green-tea.png');
+      case 'chicken.png': return require('../../assets/chicken.png');
+      case 'coffee-icecream.png': return require('../../assets/coffee-icecream.png');
+      case 'strawberry-cheesecake.png': return require('../../assets/strawberry-cheesecake.png');
+      case 'pizza.png': return require('../../assets/pizza.png');
+      case 'katsu-donburi.png': return require('../../assets/katsu-donburi.png');
+      case 'popcorn-milkshake.png': return require('../../assets/popcorn-milkshake.png');
+      case 'burger.png': return require('../../assets/burger.png');
+      case 'vegan-toast.png': return require('../../assets/vegan-toast.png');
+      case 'blueberry-tea.png': return require('../../assets/blueberry-tea.png');
+      default: return require('../../assets/green-tea.png');
     }
   };
 
@@ -321,7 +221,7 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.orderHeader}>
           <View style={styles.orderImageContainer}>
             <Image 
-              source={order.image} 
+              source={getImageSource(order.image)} 
               style={styles.orderImage}
               resizeMode="contain"
             />
@@ -330,17 +230,17 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.orderName}>{order.name}</Text>
             <Text style={styles.orderDate}>{order.date}</Text>
             <Text style={styles.orderItems}>{order.items}</Text>
-            {order.status && (
+            {(order.status === 'Completed' || order.status === 'Cancelled') && (
               <View style={styles.statusContainer}>
                 <View style={[
                   styles.statusDot, 
-                  { backgroundColor: order.status.includes('cancelled') ? '#EF4444' : '#10B981' }
+                  { backgroundColor: order.status === 'Cancelled' ? '#EF4444' : '#10B981' }
                 ]} />
                 <Text style={[
                   styles.statusText,
-                  { color: order.status.includes('cancelled') ? '#EF4444' : '#10B981' }
+                  { color: order.status === 'Cancelled' ? '#EF4444' : '#10B981' }
                 ]}>
-                  {order.status}
+                  {order.status === 'Cancelled' ? 'Order cancelled' : 'Order delivered'}
                 </Text>
               </View>
             )}
@@ -360,13 +260,6 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
               >
                 <Text style={styles.cancelButtonText}>Cancel Order</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.button, styles.trackButton]}
-                activeOpacity={0.8}
-                onPress={() => navigation.navigate('LiveTrackingScreen', { order })}
-              >
-                <Text style={styles.trackButtonText}>Track Driver</Text>
-              </TouchableOpacity>
             </>
           )}
           
@@ -382,6 +275,7 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity 
                 style={[styles.button, styles.orderAgainButton]}
                 activeOpacity={0.8}
+                onPress={() => handleOrderAgain(order)}
               >
                 <Text style={styles.orderAgainButtonText}>Order Again</Text>
               </TouchableOpacity>
@@ -401,7 +295,7 @@ const MyOrdersScreen: React.FC<Props> = ({ navigation }) => {
         <TouchableOpacity 
           style={styles.backButton} 
           activeOpacity={0.8}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('Main')}
         >
           <Text style={styles.backIcon}> ⌂ </Text>
         </TouchableOpacity>
@@ -740,16 +634,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 14,
   },
-  trackButton: {
-    backgroundColor: '#FFF2E6',
-    borderWidth: 1,
-    borderColor: '#FF6B35',
-  },
-  trackButtonText: {
-    color: '#FF6B35',
-    fontWeight: '700',
-    fontSize: 14,
-  },
+
   reviewButton: {
     backgroundColor: '#FFF2E6',
     borderWidth: 1,

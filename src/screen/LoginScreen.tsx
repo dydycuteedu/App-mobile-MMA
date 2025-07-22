@@ -11,10 +11,11 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../components/navigation"; // Update with your actual path
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===================================================================
 // ĐỊA CHỈ IP MỚI CỦA CẬU ĐÃ ĐƯỢC CẬP NHẬT
-const YOUR_COMPUTER_IP = '192.168.10.67';
+const YOUR_COMPUTER_IP = '192.168.6.209';
 // ===================================================================
 
 export default function LoginScreen() {
@@ -28,11 +29,10 @@ export default function LoginScreen() {
       Alert.alert("Lỗi", "Vui lòng nhập email và mật khẩu");
       return;
     }
-
     try {
       // API call đã được cập nhật với IP đúng
       const response = await fetch(
-        `http://${YOUR_COMPUTER_IP}:3000/users?email=${username}&password=${password}`
+        `http://192.168.6.209:3000/users?email=${username}&password=${password}`
       );
       const data = await response.json();
 
