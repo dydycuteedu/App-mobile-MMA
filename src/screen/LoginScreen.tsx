@@ -32,7 +32,7 @@ export default function LoginScreen() {
     try {
       // API call đã được cập nhật với IP đúng
       const response = await fetch(
-        `http://192.168.6.209:3000/users?email=${username}&password=${password}`
+        `http://${YOUR_COMPUTER_IP}:3000/users?email=${username}&password=${password}`
       );
       const data = await response.json();
 

@@ -11,14 +11,14 @@
       "isBanned": false
     },
     {
+      "id": "u2",
       "name": "Bob Le",
-      "email": "bob@gmail.com",
-      "phone": "0907654321",
-      "password": "1",
+      "email": "bob@example.com",
+      "password": "654321",
       "address": "456 Le Loi",
+      "phone": "0907654321",
       "role": "admin",
-      "isBanned": false,
-      "id": "u2"
+      "isBanned": false
     },
     {
       "id": "1753087563245",
@@ -41,12 +41,11 @@
       "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220"
     },
     {
-      "id": "2",
       "name": "Pizza",
-      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.111",
       "price": "12.99",
       "category": "Snacks",
-      "image": "https://cdn.pixabay.com/photo/2021/04/06/14/38/pizza-6156566_640.jpg"
+      "id": "2"
     }
   ],
   "orders": [
@@ -281,7 +280,7 @@
       "price": "12.99",
       "date": "22/7/2025, 13:17:02",
       "items": "1 item",
-      "status": "Pending",
+      "status": "Completed",
       "image": "pizza.png",
       "orderNumber": "0033308",
       "subtotal": "12.99",
@@ -303,7 +302,7 @@
       "price": "22.00",
       "date": "22/7/2025, 13:23:49",
       "items": "1 item",
-      "status": "Pending",
+      "status": "Completed",
       "image": "chicken.png",
       "orderNumber": "0191430",
       "subtotal": "20.00",
@@ -325,7 +324,7 @@
       "price": "12.99",
       "date": "22/7/2025, 13:23:51",
       "items": "1 item",
-      "status": "Pending",
+      "status": "Completed",
       "image": "pizza.png",
       "orderNumber": "0995015",
       "subtotal": "12.99",
@@ -347,7 +346,7 @@
       "price": "49.00",
       "date": "22/7/2025, 13:26:51",
       "items": "2 items",
-      "status": "Pending",
+      "status": "Completed",
       "image": "coffee-icecream.png",
       "orderNumber": "0000254",
       "subtotal": "40.00",

@@ -21,7 +21,7 @@ export default function AdminScreen({ navigation }: Props) {
   const promoAnim = createAnimated();
   const userAnim = createAnimated();
   const orderAnim = createAnimated();
-  const dashboardAnim = createAnimated(); // 👈 thêm animation cho Dashboard
+
 
   const animateIn = (anim: Animated.Value) => {
     Animated.spring(anim, {
@@ -68,20 +68,6 @@ export default function AdminScreen({ navigation }: Props) {
 
         {/* Các nút chức năng */}
         <View style={styles.menuContainer}>
-          <Pressable
-            onPress={() => navigation.navigate("Dashboard")}
-            onPressIn={() => animateIn(dashboardAnim)}
-            onPressOut={() => animateOut(dashboardAnim)}
-          >
-            <Animated.View
-              style={[
-                styles.menuButton,
-                { transform: [{ scale: dashboardAnim }] },
-              ]}
-            >
-              <Text style={styles.menuText}>Dashboard</Text>
-            </Animated.View>
-          </Pressable>
           <Pressable
             onPress={() => navigation.navigate("FoodManagement")}
             onPressIn={() => animateIn(foodAnim)}
