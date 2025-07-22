@@ -3,7 +3,7 @@ export type RootStackParamList = {
   Login: undefined;
   Signin: undefined;
   Main: undefined;
-  Profile: { user: { name: string; email: string } };
+  Profile: undefined;
   Snack: undefined;
   Meal: undefined;
   Vegan: undefined;

@@ -180,7 +180,7 @@ const Header = () => {
                   <TouchableMenuItem
                     icon="person"
                     text="My Profile"
-                    onPress={() => { }}
+                     onPress={() => navigation.navigate("Profile")}
                   />
 
                   <TouchableMenuItem
