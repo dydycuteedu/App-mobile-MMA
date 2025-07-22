@@ -18,6 +18,7 @@ import AdminScreen from "./src/screen/AdminScreen";
 import FoodManagementScreen from "./src/screen/FoodManagementScreen";
 import PromotionManagementScreen from "./src/screen/PromotionManagementScreen";
 import UserManagementScreen from "./src/screen/UserManagementScreen";
+import DashboardScreen from "./src/screen/DashboardScreen";
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 // --- THÊM DÒNG NÀY ĐỂ IMPORT MÀN HÌNH MỚI ---
@@ -43,7 +44,10 @@ export default function App() {
         <Stack.Screen name="Admin"component={AdminScreen} options={{ title: "Admin Dashboard" }}/>
         <Stack.Screen name="FoodManagement" component={FoodManagementScreen} options={{ title: "Quản lý Thực phẩm" }}/>
         <Stack.Screen name="PromotionManagement" component={PromotionManagementScreen} options={{ title: "Quản lý Khuyến mãi" }}/>
-        <Stack.Screen name="UserManagement" component={UserManagementScreen} options={{ title: "Quản lý Người dùng" }}/>
+        <Stack.Screen name="UserManagement" component={UserManagementScreen} options={{ title: "Quản lý Người dùng" }} />
+        <Stack.Screen name="Dashboard" component={DashboardScreen} />
+        
+
         
         {/* --- THÊM DÒNG NÀY ĐỂ ĐĂNG KÝ MÀN HÌNH MỚI --- */}
         <Stack.Screen name="OrderManagement" component={OrderManagementScreen} />

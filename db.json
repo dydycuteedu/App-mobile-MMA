@@ -11,14 +11,14 @@
       "isBanned": false
     },
     {
-      "id": "u2",
       "name": "Bob Le",
-      "email": "bob@example.com",
-      "password": "654321",
-      "address": "456 Le Loi",
+      "email": "bob@gmail.com",
       "phone": "0907654321",
+      "password": "1",
+      "address": "456 Le Loi",
       "role": "admin",
-      "isBanned": false
+      "isBanned": false,
+      "id": "u2"
     },
     {
       "id": "1753087563245",
@@ -62,21 +62,21 @@
       "customerId": "u1",
       "status": "Confirmed",
       "date": "2025-07-19",
-      "total": 50.10
+      "total": 50.1
     },
     {
       "id": "o3",
       "customerId": "u2",
-      "status": "Shipping",
+      "status": "Completed",
       "date": "2025-07-17",
-      "total": 15.50
+      "total": 15.5
     },
     {
       "id": "o4",
       "customerId": "u1",
       "status": "Cancelled",
       "date": "2025-07-20",
-      "total": 120.00
+      "total": 120
     },
     {
       "id": "o5",
@@ -90,10 +90,32 @@
       "customerId": "u1",
       "status": "Pending",
       "date": "2025-07-21",
-      "total": 42.50
+      "total": 42.5
     }
   ],
   "reviews": [],
   "payments": [],
-  "promotions": []
+  "promotions": [
+    {
+      "id": 1,
+      "code": "SUMMER20",
+      "description": "Get 20% off your order during summer!",
+      "discount": "20",
+      "validUntil": "2025-08-31"
+    },
+    {
+      "id": 2,
+      "code": "FREESHIP",
+      "description": "Enjoy free shipping on all orders above $50.",
+      "discount": "10",
+      "validUntil": "2025-09-15"
+    },
+    {
+      "id": 3,
+      "code": "WELCOME15",
+      "description": "15% discount for first-time customers.",
+      "discount": "15",
+      "validUntil": "2025-12-31"
+    }
+  ]
 }

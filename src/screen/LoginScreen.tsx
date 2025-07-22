@@ -14,7 +14,7 @@ import { RootStackParamList } from "../components/navigation"; // Update with yo
 
 // ===================================================================
 // ĐỊA CHỈ IP MỚI CỦA CẬU ĐÃ ĐƯỢC CẬP NHẬT
-const YOUR_COMPUTER_IP = '192.168.10.67';
+const YOUR_COMPUTER_IP = "10.12.66.89";
 // ===================================================================
 
 export default function LoginScreen() {
