@@ -1,4 +1,3 @@
-// src/components/Header.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -15,6 +14,7 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "./navigation";
+import { useCart } from "../screen/CartContext";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,29 +28,6 @@ const categories: {
   { name: "Vegan", icon: "leaf-outline", screen: "Vegan" },
   { name: "Dessert", icon: "ice-cream-outline", screen: "Dessert" },
   { name: "Drinks", icon: "cafe-outline", screen: "Drinks" },
-  // { name: "Login", icon: "cafe-outline", screen: "Login" },
-];
-
-// Updated cart items with quantity field
-const initialCartItems = [
-  {
-    id: "1",
-    name: "Strawberry Shake",
-    price: 20.0,
-    date: "29/11/24",
-    time: "15:00",
-    image: require("../assets/images/strawberry-shake.png"),
-    quantity: 1,
-  },
-  {
-    id: "2",
-    name: "Braceoil Lavagna",
-    price: 12.0,
-    date: "29/11/24",
-    time: "13:00",
-    image: require("../assets/images/braceoil-lavagna.png"),
-    quantity: 1,
-  },
 ];
 
 const Header = () => {
@@ -58,7 +35,13 @@ const Header = () => {
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  
+  const { 
+    cartItems, 
+    increaseQuantity, 
+    decreaseQuantity,
+    clearCart
+  } = useCart();
 
   const handleMyOrdersPress = () => {
     setShowProfilePopup(false);
@@ -70,25 +53,7 @@ const Header = () => {
     setIsLoggedIn(false);
   };
 
-  const increaseQuantity = (itemId: string) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  const decreaseQuantity = (itemId: string) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
-  // Calculate cart values with quantity
+  // Calculate cart values
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -97,6 +62,18 @@ const Header = () => {
   const deliveryFee = 2.0;
   const total = subtotal + taxAndFees + deliveryFee;
 
+  const handleCheckout = () => {
+    setShowCartPopup(false);
+    clearCart();
+      navigation.navigate("ConfirmOrderScreen", {
+    orderItems: cartItems,
+    subtotal: subtotal,
+    taxAndFees: taxAndFees,
+    deliveryFee: deliveryFee,
+    total: total,
+  });
+};
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -104,10 +81,6 @@ const Header = () => {
         <Text style={styles.logo}>
           Click<Text style={styles.logoAccent}>&</Text>Eat
         </Text>
-        {/* <Image
-          source={require("../assets/images/logo.png")}
-          style={styles.logo}
-        /> */}
 
         <TextInput
           placeholder="Search"
@@ -122,6 +95,11 @@ const Header = () => {
           onPress={() => setShowCartPopup(true)}
         >
           <MaterialIcons name="shopping-cart" size={22} color="white" />
+          {cartItems.length > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartItems.reduce((sum, item) => sum + item.quantity, 0)}</Text>
+            </View>
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.iconBtn}
@@ -129,8 +107,6 @@ const Header = () => {
         >
           <Ionicons name="person-outline" size={22} color="white" />
         </TouchableOpacity>
-
-       
       </View>
 
       {/* Greeting and categories */}
@@ -195,16 +171,7 @@ const Header = () => {
                     text="My Profile"
                     onPress={() => {}}
                   />
-                  <TouchableMenuItem
-                    icon="location-on"
-                    text="Delivery Address"
-                    onPress={() => {}}
-                  />
-                  <TouchableMenuItem
-                    icon="payment"
-                    text="Payment Methods"
-                    onPress={() => {}}
-                  />
+
                   <TouchableMenuItem
                     icon="email"
                     text="Contact Us"
@@ -244,7 +211,7 @@ const Header = () => {
       </Modal>
 
       {/* Cart Popup */}
-      <Modal
+       <Modal
         visible={showCartPopup}
         transparent
         animationType="fade"
@@ -259,7 +226,9 @@ const Header = () => {
             <View style={styles.cartHeader}>
               <Text style={styles.cartTitle}>Cart</Text>
               <Text style={styles.cartSubtitle}>
-                You have {cartItems.length} items in the cart
+                {cartItems.length > 0 
+                  ? `You have ${cartItems.reduce((sum, item) => sum + item.quantity, 0)} items in the cart`
+                  : 'Your cart is empty'}
               </Text>
             </View>
 
@@ -267,76 +236,82 @@ const Header = () => {
               style={styles.cartItemsContainer}
               contentContainerStyle={{ paddingBottom: 20 }}
             >
-              {cartItems.map((item) => (
-                <View key={item.id} style={styles.cartItem}>
-                  <Image source={item.image} style={styles.itemImage} />
-                  <View style={styles.itemDetails}>
-                    <Text style={styles.cartItemName}>{item.name}</Text>
-                    <Text style={styles.cartItemPrice}>
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </Text>
-                    <View style={styles.cartItemTime}>
-                      <Text style={styles.cartItemDateTime}>{item.date}</Text>
-                      <Text style={styles.cartItemDateTime}>{item.time}</Text>
+              {cartItems.length === 0 ? (
+                <Text style={styles.emptyCartText}>No items in cart</Text>
+              ) : (
+                cartItems.map((item) => (
+                  <View key={`${item.id}-${item.portion}`} style={styles.cartItem}>
+                    <Image source={item.image} style={styles.itemImage} />
+                    <View style={styles.itemDetails}>
+                      <Text style={styles.cartItemName}>{item.name}</Text>
+                      {item.portion && (
+                        <Text style={styles.cartItemPortion}>{item.portion}</Text>
+                      )}
+                      <Text style={styles.cartItemPrice}>
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </Text>
+                      <View style={styles.cartItemTime}>
+                        <Text style={styles.cartItemDateTime}>{item.date}</Text>
+                        <Text style={styles.cartItemDateTime}>{item.time}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.quantityContainer}>
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() => decreaseQuantity(item.id)}
+                      >
+                        <Text style={styles.quantityButtonText}>-</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.quantityText}>{item.quantity}</Text>
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() => increaseQuantity(item.id)}
+                      >
+                        <Text style={styles.quantityButtonText}>+</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
-                  <View style={styles.quantityContainer}>
-                    <TouchableOpacity
-                      style={styles.quantityButton}
-                      onPress={() => decreaseQuantity(item.id)}
-                    >
-                      <Text style={styles.quantityButtonText}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.quantityText}>{item.quantity}</Text>
-                    <TouchableOpacity
-                      style={styles.quantityButton}
-                      onPress={() => increaseQuantity(item.id)}
-                    >
-                      <Text style={styles.quantityButtonText}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ))}
+                ))
+              )}
             </ScrollView>
 
-            <View style={styles.cartBottom}>
-              <View style={styles.cartSummary}>
-                <View style={styles.summaryRow}>
-                  <Text style={styles.summaryLabel}>Subtotal</Text>
-                  <Text style={styles.summaryValue}>
-                    ${subtotal.toFixed(2)}
-                  </Text>
+            {cartItems.length > 0 && (
+              <View style={styles.cartBottom}>
+                <View style={styles.cartSummary}>
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Subtotal</Text>
+                    <Text style={styles.summaryValue}>
+                      ${subtotal.toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Tax and Fees</Text>
+                    <Text style={styles.summaryValue}>
+                      ${taxAndFees.toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Delivery</Text>
+                    <Text style={styles.summaryValue}>
+                      ${deliveryFee.toFixed(2)}
+                    </Text>
+                  </View>
+                  <View style={styles.summaryRowTotal}>
+                    <Text style={styles.summaryLabelTotal}>Total</Text>
+                    <Text style={styles.summaryValueTotal}>
+                      ${total.toFixed(2)}
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.summaryRow}>
-                  <Text style={styles.summaryLabel}>Tax and Fees</Text>
-                  <Text style={styles.summaryValue}>
-                    ${taxAndFees.toFixed(2)}
-                  </Text>
-                </View>
-                <View style={styles.summaryRow}>
-                  <Text style={styles.summaryLabel}>Delivery</Text>
-                  <Text style={styles.summaryValue}>
-                    ${deliveryFee.toFixed(2)}
-                  </Text>
-                </View>
-                <View style={styles.summaryRowTotal}>
-                  <Text style={styles.summaryLabelTotal}>Total</Text>
-                  <Text style={styles.summaryValueTotal}>
-                    ${total.toFixed(2)}
-                  </Text>
-                </View>
-              </View>
 
-              <TouchableOpacity
-                style={styles.checkoutButton}
-                onPress={() => {
-                  setShowCartPopup(false);
-                  navigation.navigate("ConfirmOrderScreen");
-                }}
-              >
-                <Text style={styles.checkoutButtonText}>Checkout</Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={styles.checkoutButton}
+                  onPress={handleCheckout}
+                >
+                  <Text style={styles.checkoutButtonText}>Checkout</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </TouchableOpacity>
       </Modal>
@@ -561,6 +536,33 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.3)",
     justifyContent: "center",
     alignItems: "center",
+  },
+    cartBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  cartItemPortion: {
+    fontSize: 12,
+    color: 'white',
+    marginBottom: 3,
+  },
+  emptyCartText: {
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
   },
   quantityButtonText: {
     fontSize: 12,

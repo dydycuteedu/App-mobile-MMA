@@ -53,47 +53,352 @@
     {
       "id": "o1",
       "customerId": "u1",
-      "status": "Completed",
-      "date": "2025-07-18",
-      "total": 31.58
+      "name": "Matcha",
+      "price": "20.00",
+      "date": "17 Oct, 01:20 pm",
+      "items": "1 item",
+      "status": "Cancelled",
+      "image": "green-tea.png",
+      "orderNumber": "0054752",
+      "subtotal": "32.00",
+      "tax": "5.00",
+      "deliveryFee": "3.00",
+      "total": "40.00",
+      "itemsList": [
+        {
+          "name": "Strawberry Shake",
+          "price": "20.00"
+        },
+        {
+          "name": "Broccoli Lasagna",
+          "price": "12.00"
+        }
+      ]
     },
     {
       "id": "o2",
       "customerId": "u1",
+      "name": "Sesame Chicken",
+      "price": "20.00",
+      "date": "17 Oct, 01:20 pm",
+      "items": "1 item",
       "status": "Confirmed",
-      "date": "2025-07-19",
-      "total": 50.10
+      "image": "chicken.png",
+      "orderNumber": "0054753",
+      "subtotal": "20.00",
+      "tax": "3.00",
+      "deliveryFee": "3.00",
+      "total": "26.00",
+      "itemsList": [
+        {
+          "name": "Sesame Chicken",
+          "price": "20.00"
+        }
+      ]
     },
     {
       "id": "o3",
-      "customerId": "u2",
-      "status": "Shipping",
-      "date": "2025-07-17",
-      "total": 15.50
+      "customerId": "u1",
+      "name": "Coffee Ice Cream",
+      "price": "20.00",
+      "date": "22 Apr, 01:20 pm",
+      "items": "2 items",
+      "status": "Completed",
+      "image": "coffee-icecream.png",
+      "orderNumber": "0054754",
+      "subtotal": "40.00",
+      "tax": "6.00",
+      "deliveryFee": "3.00",
+      "total": "49.00",
+      "itemsList": [
+        {
+          "name": "Coffee Ice Cream",
+          "price": "20.00"
+        },
+        {
+          "name": "Extra Topping",
+          "price": "20.00"
+        }
+      ]
     },
     {
       "id": "o4",
-      "customerId": "u1",
+      "customerId": "1753087563245",
+      "name": "Strawberry Cheesecake",
+      "price": "20.00",
+      "date": "29 Nov, 01:20 pm",
+      "items": "1 item",
       "status": "Cancelled",
-      "date": "2025-07-20",
-      "total": 120.00
+      "image": "cheesecake.png",
+      "orderNumber": "0054755",
+      "subtotal": "20.00",
+      "tax": "3.00",
+      "deliveryFee": "3.00",
+      "total": "26.00",
+      "itemsList": [
+        {
+          "name": "Strawberry Cheesecake",
+          "price": "20.00"
+        }
+      ]
     },
     {
-      "id": "o5",
-      "customerId": "u2",
-      "status": "Completed",
-      "date": "2025-07-18",
-      "total": 75.25
-    },
-    {
-      "id": "o6",
+      "id": "o1753158791665",
       "customerId": "u1",
+      "name": "Burger",
+      "price": "16.50",
+      "date": "11:33:11 22/7/2025",
+      "items": "1 item",
+      "status": "Cancelled",
+      "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220",
+      "orderNumber": "0490046",
+      "subtotal": "15.00",
+      "tax": "1.50",
+      "deliveryFee": "0.00",
+      "total": "16.50",
+      "deliveryTime": "2025-07-22T06:33:11.666Z",
+      "itemsList": [
+        {
+          "name": "Burger",
+          "price": 15
+        }
+      ]
+    },
+    {
+      "id": "o1753160809313",
+      "customerId": "u1",
+      "name": "Burger",
+      "price": "16.50",
+      "date": "12:06:49 22/7/2025",
+      "items": "1 item",
+      "status": "Cancelled",
+      "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220",
+      "orderNumber": "0828798",
+      "subtotal": "15.00",
+      "tax": "1.50",
+      "deliveryFee": "0.00",
+      "total": "16.50",
+      "deliveryTime": "2025-07-22T07:06:49.314Z",
+      "itemsList": [
+        {
+          "name": "Burger",
+          "price": 15
+        }
+      ]
+    },
+    {
+      "id": "o1753160811332",
+      "customerId": "u1",
+      "name": "Pizza",
+      "price": "12.99",
+      "date": "12:06:51 22/7/2025",
+      "items": "1 item",
       "status": "Pending",
-      "date": "2025-07-21",
-      "total": 42.50
+      "image": "pizza.png",
+      "orderNumber": "0731364",
+      "subtotal": "12.99",
+      "tax": "2.00",
+      "deliveryFee": "3.00",
+      "total": "17.99",
+      "deliveryTime": "2025-07-22T07:06:51.333Z",
+      "itemsList": [
+        {
+          "name": "Pizza",
+          "price": "12.99"
+        }
+      ]
+    },
+    {
+      "id": "o1753162642249",
+      "customerId": "u1",
+      "name": "Burger",
+      "price": "16.50",
+      "date": "12:37:22 22/7/2025",
+      "items": "1 item",
+      "status": "Cancelled",
+      "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220",
+      "orderNumber": "0532401",
+      "subtotal": "15.00",
+      "tax": "1.50",
+      "deliveryFee": "0.00",
+      "total": "16.50",
+      "deliveryTime": "2025-07-22T07:37:22.250Z",
+      "itemsList": [
+        {
+          "name": "Burger",
+          "price": 15
+        }
+      ]
+    },
+    {
+      "id": "o1753163096943",
+      "customerId": "u1",
+      "name": "Burger",
+      "price": "16.50",
+      "date": "12:44:56 22/7/2025",
+      "items": "1 item",
+      "status": "Cancelled",
+      "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220",
+      "orderNumber": "0788355",
+      "subtotal": "15.00",
+      "tax": "1.50",
+      "deliveryFee": "0.00",
+      "total": "16.50",
+      "deliveryTime": "2025-07-22T07:44:56.946Z",
+      "itemsList": [
+        {
+          "name": "Burger",
+          "price": 15
+        }
+      ]
+    },
+    {
+      "id": "o1753165017996",
+      "customerId": "u1",
+      "name": "Burger",
+      "price": "16.50",
+      "date": "22/7/2025, 13:16:57",
+      "items": "1 item",
+      "status": "Cancelled",
+      "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220",
+      "orderNumber": "0690923",
+      "subtotal": "15.00",
+      "tax": "1.50",
+      "deliveryFee": "0.00",
+      "total": "16.50",
+      "deliveryTime": "2025-07-22T08:16:57.998Z",
+      "itemsList": [
+        {
+          "name": "Burger",
+          "price": 15
+        }
+      ]
+    },
+    {
+      "id": "o1753165022219",
+      "customerId": "u1",
+      "name": "Pizza",
+      "price": "12.99",
+      "date": "22/7/2025, 13:17:02",
+      "items": "1 item",
+      "status": "Pending",
+      "image": "pizza.png",
+      "orderNumber": "0033308",
+      "subtotal": "12.99",
+      "tax": "2.00",
+      "deliveryFee": "3.00",
+      "total": "17.99",
+      "deliveryTime": "2025-07-22T08:17:02.220Z",
+      "itemsList": [
+        {
+          "name": "Pizza",
+          "price": "12.99"
+        }
+      ]
+    },
+    {
+      "id": "o1753165429902",
+      "customerId": "u1",
+      "name": "Sesame Chicken",
+      "price": "22.00",
+      "date": "22/7/2025, 13:23:49",
+      "items": "1 item",
+      "status": "Pending",
+      "image": "chicken.png",
+      "orderNumber": "0191430",
+      "subtotal": "20.00",
+      "tax": "2.00",
+      "deliveryFee": "0.00",
+      "total": "22.00",
+      "deliveryTime": "2025-07-22T08:23:49.904Z",
+      "itemsList": [
+        {
+          "name": "Sesame Chicken",
+          "price": 20
+        }
+      ]
+    },
+    {
+      "id": "o1753165431935",
+      "customerId": "u1",
+      "name": "Pizza",
+      "price": "12.99",
+      "date": "22/7/2025, 13:23:51",
+      "items": "1 item",
+      "status": "Pending",
+      "image": "pizza.png",
+      "orderNumber": "0995015",
+      "subtotal": "12.99",
+      "tax": "2.00",
+      "deliveryFee": "3.00",
+      "total": "17.99",
+      "deliveryTime": "2025-07-22T08:23:51.937Z",
+      "itemsList": [
+        {
+          "name": "Pizza",
+          "price": "12.99"
+        }
+      ]
+    },
+    {
+      "id": "o1753165611049",
+      "customerId": "u1",
+      "name": "Coffee Ice Cream",
+      "price": "49.00",
+      "date": "22/7/2025, 13:26:51",
+      "items": "2 items",
+      "status": "Pending",
+      "image": "coffee-icecream.png",
+      "orderNumber": "0000254",
+      "subtotal": "40.00",
+      "tax": "4.00",
+      "deliveryFee": "0.00",
+      "total": "49.00",
+      "deliveryTime": "2025-07-22T08:26:51.052Z",
+      "itemsList": [
+        {
+          "name": "Coffee Ice Cream",
+          "price": 20
+        },
+        {
+          "name": "Extra Topping",
+          "price": 20
+        }
+      ]
+    }
+  ],
+  "cart": [
+    {
+      "userId": "u1",
+      "cartItems": [],
+      "id": "1"
     }
   ],
   "reviews": [],
-  "payments": [],
+  "paymentMethods": [
+    {
+      "id": "1",
+      "userId": "u1",
+      "type": "Credit Card",
+      "cardNumber": "**** **** **** 1234",
+      "expiry": "12/25"
+    }
+  ],
+  "addresses": [
+    {
+      "id": "1",
+      "userId": "1753087563245",
+      "fullName": "dy",
+      "phone": "0905443128",
+      "address": "123 Nguyen Trai, Da Nang city"
+    },
+    {
+      "id": "2",
+      "userId": "u1",
+      "fullName": "Alice Tran",
+      "phone": "0901234567",
+      "address": "123 Nguyen Trai, District 1, Ho Chi Minh City"
+    }
+  ],
   "promotions": []
 }

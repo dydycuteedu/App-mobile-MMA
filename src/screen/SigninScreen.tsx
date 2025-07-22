@@ -24,10 +24,10 @@ type RootStackParamList = {
 
 // ===================================================================
 // ĐỊA CHỈ IP MỚI CỦA CẬU ĐÃ ĐƯỢC CẬP NHẬT
-const YOUR_COMPUTER_IP = '192.168.10.67';
+const YOUR_COMPUTER_IP = '192.168.1.44';
 // ===================================================================
 
-const API_URL = `http://${YOUR_COMPUTER_IP}:3000/users`;
+const API_URL = `http://192.168.1.44:3000/users`;
 
 export default function SigninScreen() {
   const navigation =
