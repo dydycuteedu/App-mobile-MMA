@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,10 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
+
+const API_URL = "http://10.12.66.89:3000/promotions";
 
 interface Props {
   navigation: any;
@@ -30,10 +33,17 @@ export default function PromotionManagementScreen({ navigation }: Props) {
   const [description, setDescription] = useState("");
   const [discount, setDiscount] = useState("");
   const [validUntil, setValidUntil] = useState("");
-  const [editingPromotion, setEditingPromotion] = useState<Promotion | null>(
-    null
-  );
+  const [editingPromotion, setEditingPromotion] = useState<Promotion | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const fetchPromotions = async () => {
+    const res = await axios.get(API_URL);
+    setPromotions(res.data);
+  };
+
+  useEffect(() => {
+    fetchPromotions();
+  }, []);
 
   const resetForm = () => {
     setCode("");
@@ -42,31 +52,23 @@ export default function PromotionManagementScreen({ navigation }: Props) {
     setValidUntil("");
   };
 
-  const handleAddOrUpdatePromotion = () => {
+  const handleAddOrUpdatePromotion = async () => {
     if (!code || !discount) {
       Alert.alert("Validation Error", "Code and Discount are required.");
       return;
     }
 
+    const payload = { code, description, discount, validUntil };
+
     if (editingPromotion) {
-      const updated = promotions.map((item) =>
-        item.id === editingPromotion.id
-          ? { ...item, code, description, discount, validUntil }
-          : item
-      );
-      setPromotions(updated);
-      setEditingPromotion(null);
+      await axios.put(`${API_URL}/${editingPromotion.id}`, payload);
     } else {
-      const newPromotion: Promotion = {
-        id: Date.now(),
-        code,
-        description,
-        discount,
-        validUntil,
-      };
-      setPromotions([...promotions, newPromotion]);
+      await axios.post(API_URL, payload);
     }
+
+    fetchPromotions();
     resetForm();
+    setEditingPromotion(null);
     setModalVisible(false);
   };
 
@@ -79,22 +81,22 @@ export default function PromotionManagementScreen({ navigation }: Props) {
     setModalVisible(true);
   };
 
-  const deletePromotion = (id: number) => {
-    setPromotions(promotions.filter((item) => item.id !== id));
+  const deletePromotion = async (id: number) => {
+    await axios.delete(`${API_URL}/${id}`);
+    fetchPromotions();
   };
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Promotion Management</Text>
       </View>
 
+      {/* List */}
       <ScrollView contentContainerStyle={styles.body}>
         <TouchableOpacity
           style={styles.addButton}
@@ -114,21 +116,13 @@ export default function PromotionManagementScreen({ navigation }: Props) {
             <View style={styles.item}>
               <Text style={styles.itemTitle}>{item.code}</Text>
               <Text style={styles.itemDetail}>Discount: {item.discount}%</Text>
-              <Text style={styles.itemDetail}>
-                Valid Until: {item.validUntil}
-              </Text>
+              <Text style={styles.itemDetail}>Valid Until: {item.validUntil}</Text>
               <Text style={styles.itemDetail}>{item.description}</Text>
               <View style={styles.actionRow}>
-                <TouchableOpacity
-                  style={styles.editButton}
-                  onPress={() => openEditModal(item)}
-                >
+                <TouchableOpacity style={styles.editButton} onPress={() => openEditModal(item)}>
                   <Text style={styles.buttonText}>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => deletePromotion(item.id)}
-                >
+                <TouchableOpacity style={styles.deleteButton} onPress={() => deletePromotion(item.id)}>
                   <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -137,6 +131,7 @@ export default function PromotionManagementScreen({ navigation }: Props) {
         />
       </ScrollView>
 
+      {/* Modal */}
       <Modal visible={modalVisible} animationType="slide">
         <ScrollView contentContainerStyle={styles.modalContainer}>
           <Text style={styles.modalHeader}>
@@ -145,56 +140,29 @@ export default function PromotionManagementScreen({ navigation }: Props) {
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Promotion Code *</Text>
-            <TextInput
-              style={styles.input}
-              value={code}
-              onChangeText={setCode}
-            />
+            <TextInput style={styles.input} value={code} onChangeText={setCode} />
           </View>
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Description</Text>
-            <TextInput
-              style={[styles.input, { height: 80 }]}
-              multiline
-              value={description}
-              onChangeText={setDescription}
-            />
+            <TextInput style={[styles.input, { height: 80 }]} multiline value={description} onChangeText={setDescription} />
           </View>
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Discount (%) *</Text>
-            <TextInput
-              style={styles.input}
-              value={discount}
-              onChangeText={setDiscount}
-              keyboardType="numeric"
-            />
+            <TextInput style={styles.input} value={discount} onChangeText={setDiscount} keyboardType="numeric" />
           </View>
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Valid Until</Text>
-            <TextInput
-              style={styles.input}
-              value={validUntil}
-              onChangeText={setValidUntil}
-              placeholder="YYYY-MM-DD"
-            />
+            <TextInput style={styles.input} value={validUntil} onChangeText={setValidUntil} placeholder="YYYY-MM-DD" />
           </View>
 
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={handleAddOrUpdatePromotion}
-          >
-            <Text style={styles.buttonText}>
-              {editingPromotion ? "Update" : "Add"}
-            </Text>
+          <TouchableOpacity style={styles.saveButton} onPress={handleAddOrUpdatePromotion}>
+            <Text style={styles.buttonText}>{editingPromotion ? "Update" : "Add"}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => setModalVisible(false)}
-          >
+          <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -202,7 +170,6 @@ export default function PromotionManagementScreen({ navigation }: Props) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   header: {

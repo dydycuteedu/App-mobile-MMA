@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,25 +9,25 @@ import {
   Modal,
   TouchableOpacity,
   Alert,
-  Platform,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+
+const API_URL = "http://10.12.66.89:3000/users";
 
 interface Props {
   navigation: any;
 }
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
   address: string;
-  dob: Date | null;
   role: string;
-  active: boolean;
+  isBanned: boolean;
 }
 
 export default function UserManagementScreen({ navigation }: Props) {
@@ -36,24 +36,34 @@ export default function UserManagementScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [dob, setDob] = useState<Date | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [role, setRole] = useState("");
-  const [active, setActive] = useState(true);
+  const [isBanned, setIsBanned] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get(API_URL);
+      setUsers(res.data);
+    } catch (err) {
+      Alert.alert("Error", "Failed to load user data.");
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const resetForm = () => {
     setName("");
     setEmail("");
     setPhone("");
     setAddress("");
-    setDob(null);
     setRole("");
-    setActive(true);
+    setIsBanned(false);
   };
 
-  const handleAddOrUpdateUser = () => {
+  const handleAddOrUpdateUser = async () => {
     if (!name || !email) {
       Alert.alert("Validation Error", "Name and Email are required.");
       return;
@@ -64,29 +74,29 @@ export default function UserManagementScreen({ navigation }: Props) {
       return;
     }
 
-    if (editingUser) {
-      const updated = users.map((item) =>
-        item.id === editingUser.id
-          ? { ...item, name, email, phone, address, dob, role, active }
-          : item
-      );
-      setUsers(updated);
+    const payload = {
+      name,
+      email,
+      phone,
+      address,
+      role,
+      isBanned,
+    };
+
+    try {
+      if (editingUser) {
+        await axios.put(`${API_URL}/${editingUser.id}`, payload);
+      } else {
+        await axios.post(API_URL, { ...payload, id: Date.now().toString() });
+      }
+
+      fetchUsers();
+      resetForm();
       setEditingUser(null);
-    } else {
-      const newUser: User = {
-        id: Date.now(),
-        name,
-        email,
-        phone,
-        address,
-        dob,
-        role,
-        active,
-      };
-      setUsers([...users, newUser]);
+      setModalVisible(false);
+    } catch (err) {
+      Alert.alert("Error", "Failed to save user.");
     }
-    resetForm();
-    setModalVisible(false);
   };
 
   const openEditModal = (user: User) => {
@@ -95,23 +105,24 @@ export default function UserManagementScreen({ navigation }: Props) {
     setEmail(user.email);
     setPhone(user.phone);
     setAddress(user.address);
-    setDob(user.dob);
     setRole(user.role);
-    setActive(user.active);
+    setIsBanned(user.isBanned);
     setModalVisible(true);
   };
 
-  const deleteUser = (id: number) => {
-    setUsers(users.filter((item) => item.id !== id));
+  const deleteUser = async (id: string) => {
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      fetchUsers();
+    } catch (err) {
+      Alert.alert("Error", "Failed to delete user.");
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerText}>User Management</Text>
@@ -138,24 +149,15 @@ export default function UserManagementScreen({ navigation }: Props) {
               <Text style={styles.itemDetail}>Email: {item.email}</Text>
               <Text style={styles.itemDetail}>Phone: {item.phone}</Text>
               <Text style={styles.itemDetail}>Address: {item.address}</Text>
-              <Text style={styles.itemDetail}>
-                DOB: {item.dob ? item.dob.toDateString() : "-"}
-              </Text>
               <Text style={styles.itemDetail}>Role: {item.role}</Text>
               <Text style={styles.itemDetail}>
-                Status: {item.active ? "Active" : "Inactive"}
+                Status: {item.isBanned ? "Banned" : "Active"}
               </Text>
               <View style={styles.actionRow}>
-                <TouchableOpacity
-                  style={styles.editButton}
-                  onPress={() => openEditModal(item)}
-                >
+                <TouchableOpacity style={styles.editButton} onPress={() => openEditModal(item)}>
                   <Text style={styles.buttonText}>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => deleteUser(item.id)}
-                >
+                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteUser(item.id)}>
                   <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -172,110 +174,57 @@ export default function UserManagementScreen({ navigation }: Props) {
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Name *</Text>
-            <TextInput
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-            />
+            <TextInput style={styles.input} value={name} onChangeText={setName} />
           </View>
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Email *</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-            />
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} />
           </View>
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Phone</Text>
-            <TextInput
-              style={styles.input}
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-            />
+            <TextInput style={styles.input} value={phone} onChangeText={setPhone} />
           </View>
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={styles.input}
-              value={address}
-              onChangeText={setAddress}
-            />
-          </View>
-
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Date of Birth</Text>
-            <TouchableOpacity
-              style={styles.dateButton}
-              onPress={() => setShowDatePicker(true)}
-            >
-              <Text style={styles.dateButtonText}>
-                {dob ? dob.toDateString() : "Select Date"}
-              </Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-              <DateTimePicker
-                value={dob || new Date()}
-                mode="date"
-                display={Platform.OS === "ios" ? "spinner" : "default"}
-                onChange={(event, selectedDate) => {
-                  setShowDatePicker(false);
-                  if (selectedDate) setDob(selectedDate);
-                }}
-              />
-            )}
+            <TextInput style={styles.input} value={address} onChangeText={setAddress} />
           </View>
 
           <View style={styles.formGroup}>
             <Text style={styles.label}>Role</Text>
-            <RNPickerSelect
-              onValueChange={(value) => setRole(value)}
-              value={role}
-              items={[
-                { label: "Admin", value: "Admin" },
-                { label: "User", value: "User" },
-                { label: "Staff", value: "Staff" },
-              ]}
-              style={{
-                inputIOS: styles.input,
-                inputAndroid: styles.input,
-              }}
-              placeholder={{ label: "Select Role", value: null }}
-            />
+            <View style={styles.selectContainer}>
+              <RNPickerSelect
+                onValueChange={(value) => setRole(value)}
+                value={role}
+                items={[
+                  { label: "admin", value: "admin" },
+                  { label: "customer", value: "customer" },
+                ]}
+                style={{ inputIOS: styles.input, inputAndroid: styles.input }}
+                placeholder={{ label: "Select Role", value: null }}
+              />
+            </View>
           </View>
 
-          <View style={styles.formGroupRow}>
-            <Text style={styles.label}>Active:</Text>
-            <TouchableOpacity onPress={() => setActive(!active)}>
-              <Text
-                style={[
-                  styles.activeText,
-                  { color: active ? "#4CAF50" : "#E95322" },
-                ]}
-              >
-                {active ? "Active" : "Inactive"}
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Set Status</Text>
+            <TouchableOpacity
+              style={styles.statusToggle}
+              onPress={() => setIsBanned(!isBanned)}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "bold", color: isBanned ? "red" : "green" }}>
+                {isBanned ? "Banned" : "Active"}
               </Text>
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={handleAddOrUpdateUser}
-          >
-            <Text style={styles.buttonText}>
-              {editingUser ? "Update" : "Add"}
-            </Text>
+          <TouchableOpacity style={styles.saveButton} onPress={handleAddOrUpdateUser}>
+            <Text style={styles.buttonText}>{editingUser ? "Update" : "Add"}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => setModalVisible(false)}
-          >
+          <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -344,12 +293,6 @@ const styles = StyleSheet.create({
     color: "#E95322",
   },
   formGroup: { marginBottom: 15 },
-  formGroupRow: {
-    marginBottom: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   label: { fontSize: 16, marginBottom: 5, fontWeight: "bold" },
   input: {
     borderWidth: 1,
@@ -358,13 +301,6 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
   },
-  dateButton: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-  },
-  dateButtonText: { fontSize: 16 },
   saveButton: {
     backgroundColor: "#F5CB58",
     padding: 15,
@@ -377,5 +313,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
   },
-  activeText: { fontSize: 18, fontWeight: "bold" },
+  selectContainer: {
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  statusToggle: {
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 100,
+  }
 });

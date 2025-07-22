@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Alert,
   Switch,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -25,9 +26,14 @@ interface Food {
   category: string;
   isAvailable: boolean;
 }
+const YOUR_COMPUTER_IP = "10.12.66.89";
+
+const API_URL = `http://${YOUR_COMPUTER_IP}:3000/foods`;
 
 export default function FoodManagementScreen({ navigation }: Props) {
   const [foods, setFoods] = useState<Food[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -36,41 +42,67 @@ export default function FoodManagementScreen({ navigation }: Props) {
   const [editingFood, setEditingFood] = useState<Food | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
+  useEffect(() => {
+    fetchFoods();
+  }, []);
+
+  const fetchFoods = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      setFoods(data);
+    } catch (err) {
+      Alert.alert("Error", "Failed to load food data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetForm = () => {
     setName("");
     setDescription("");
     setPrice("");
     setCategory("");
     setIsAvailable(true);
+    setEditingFood(null);
   };
 
-  const handleAddOrUpdateFood = () => {
+  const handleAddOrUpdateFood = async () => {
     if (!name || !price) {
       Alert.alert("Validation Error", "Name and Price are required.");
       return;
     }
 
-    if (editingFood) {
-      const updated = foods.map((item) =>
-        item.id === editingFood.id
-          ? { ...item, name, description, price, category, isAvailable }
-          : item
-      );
-      setFoods(updated);
-      setEditingFood(null);
-    } else {
-      const newFood: Food = {
-        id: Date.now(),
-        name,
-        description,
-        price,
-        category,
-        isAvailable,
-      };
-      setFoods([...foods, newFood]);
+    const foodData: Omit<Food, "id"> = {
+      name,
+      description,
+      price,
+      category,
+      isAvailable,
+    };
+
+    try {
+      if (editingFood) {
+        await fetch(`${API_URL}/${editingFood.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(foodData),
+        });
+      } else {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(foodData),
+        });
+      }
+
+      fetchFoods();
+      resetForm();
+      setModalVisible(false);
+    } catch (err) {
+      Alert.alert("Error", "Failed to save food.");
     }
-    resetForm();
-    setModalVisible(false);
   };
 
   const openEditModal = (food: Food) => {
@@ -83,8 +115,13 @@ export default function FoodManagementScreen({ navigation }: Props) {
     setModalVisible(true);
   };
 
-  const deleteFood = (id: number) => {
-    setFoods(foods.filter((item) => item.id !== id));
+  const deleteFood = async (id: number) => {
+    try {
+      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      fetchFoods();
+    } catch (err) {
+      Alert.alert("Error", "Failed to delete food.");
+    }
   };
 
   return (
@@ -104,43 +141,47 @@ export default function FoodManagementScreen({ navigation }: Props) {
           style={styles.addButton}
           onPress={() => {
             resetForm();
-            setEditingFood(null);
             setModalVisible(true);
           }}
         >
           <Text style={styles.addButtonText}>Add New Food</Text>
         </TouchableOpacity>
 
-        <FlatList
-          data={foods}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.itemTitle}>{item.name}</Text>
-              <Text style={styles.itemDetail}>Price: ${item.price}</Text>
-              <Text style={styles.itemDetail}>Category: {item.category}</Text>
-              <Text style={styles.itemDetail}>
-                Status: {item.isAvailable ? "Available" : "Out of Stock"}
-              </Text>
-              <View style={styles.actionRow}>
-                <TouchableOpacity
-                  style={styles.editButton}
-                  onPress={() => openEditModal(item)}
-                >
-                  <Text style={styles.buttonText}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => deleteFood(item.id)}
-                >
-                  <Text style={styles.buttonText}>Delete</Text>
-                </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color="#FF9800" />
+        ) : (
+          <FlatList
+            data={foods}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.item}>
+                <Text style={styles.itemTitle}>{item.name}</Text>
+                <Text style={styles.itemDetail}>Price: ${item.price}</Text>
+                <Text style={styles.itemDetail}>Category: {item.category}</Text>
+                <Text style={styles.itemDetail}>
+                  Status: {item.isAvailable ? "Available" : "Out of Stock"}
+                </Text>
+                <View style={styles.actionRow}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => openEditModal(item)}
+                  >
+                    <Text style={styles.buttonText}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => deleteFood(item.id)}
+                  >
+                    <Text style={styles.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          )}
-        />
+            )}
+          />
+        )}
       </ScrollView>
 
+      {/* Modal for Add/Edit */}
       <Modal visible={modalVisible} animationType="slide">
         <ScrollView contentContainerStyle={styles.modalContainer}>
           <Text style={styles.modalHeader}>
@@ -167,7 +208,7 @@ export default function FoodManagementScreen({ navigation }: Props) {
           </View>
 
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Price ($) *</Text>
+            <Text style={styles.label}>Price *</Text>
             <TextInput
               style={styles.input}
               value={price}
