@@ -15,7 +15,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "./navigation";
 import { useCart } from "../screen/CartContext";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width, height } = Dimensions.get("window");
 
 const categories: {
@@ -23,22 +23,34 @@ const categories: {
   icon: string;
   screen: keyof RootStackParamList;
 }[] = [
-  { name: "Snacks", icon: "fast-food-outline", screen: "Snack" },
-  { name: "Meal", icon: "restaurant-outline", screen: "Meal" },
-  { name: "Vegan", icon: "leaf-outline", screen: "Vegan" },
-  { name: "Dessert", icon: "ice-cream-outline", screen: "Dessert" },
-  { name: "Drinks", icon: "cafe-outline", screen: "Drinks" },
-];
+    { name: "Snacks", icon: "fast-food-outline", screen: "Snack" },
+    { name: "Meal", icon: "restaurant-outline", screen: "Meal" },
+    { name: "Vegan", icon: "leaf-outline", screen: "Vegan" },
+    { name: "Dessert", icon: "ice-cream-outline", screen: "Dessert" },
+    { name: "Drinks", icon: "cafe-outline", screen: "Drinks" },
+  ];
 
 const Header = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  
-  const { 
-    cartItems, 
-    increaseQuantity, 
+
+  const handleLogoutPress = async () => {
+    try {
+      await AsyncStorage.removeItem('loggedInUser'); // hoặc key bạn đã dùng để lưu
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // tên screen đăng nhập
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
+  const {
+    cartItems,
+    increaseQuantity,
     decreaseQuantity,
     clearCart
   } = useCart();
@@ -48,10 +60,7 @@ const Header = () => {
     navigation.navigate("MyOrderScreen");
   };
 
-  const handleLogoutPress = () => {
-    setShowProfilePopup(false);
-    setIsLoggedIn(false);
-  };
+
 
   // Calculate cart values
   const subtotal = cartItems.reduce(
@@ -65,16 +74,17 @@ const Header = () => {
   const handleCheckout = () => {
     setShowCartPopup(false);
     clearCart();
-      navigation.navigate("ConfirmOrderScreen", {
-    orderItems: cartItems,
-    subtotal: subtotal,
-    taxAndFees: taxAndFees,
-    deliveryFee: deliveryFee,
-    total: total,
-  });
-};
+    navigation.navigate("ConfirmOrderScreen", {
+      orderItems: cartItems,
+      subtotal: subtotal,
+      taxAndFees: taxAndFees,
+      deliveryFee: deliveryFee,
+      total: total,
+    });
+  };
 
   return (
+
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.topRow}>
@@ -133,6 +143,7 @@ const Header = () => {
       </ScrollView>
 
       {/* Profile Popup */}
+
       <Modal
         visible={showProfilePopup}
         transparent
@@ -155,8 +166,8 @@ const Header = () => {
                     style={styles.userIcon}
                   />
                   <View>
-                    <Text style={styles.userName}>Nguyen Van A</Text>
-                    <Text style={styles.userEmail}>nguyenvana@email.com</Text>
+                    <Text style={styles.userName}>Chuc Dy</Text>
+                    <Text style={styles.userEmail}>cdy@email.com</Text>
                   </View>
                 </View>
 
@@ -169,23 +180,23 @@ const Header = () => {
                   <TouchableMenuItem
                     icon="person"
                     text="My Profile"
-                    onPress={() => {}}
+                    onPress={() => { }}
                   />
 
                   <TouchableMenuItem
                     icon="email"
                     text="Contact Us"
-                    onPress={() => {}}
+                    onPress={() => { }}
                   />
                   <TouchableMenuItem
                     icon="help"
                     text="Help & FAQs"
-                    onPress={() => {}}
+                    onPress={() => { }}
                   />
                   <TouchableMenuItem
                     icon="settings"
                     text="Settings"
-                    onPress={() => {}}
+                    onPress={() => { }}
                   />
                 </View>
 
@@ -196,13 +207,14 @@ const Header = () => {
                   <MaterialIcons name="logout" size={20} color="white" />
                   <Text style={styles.logoutText}>Log Out</Text>
                 </TouchableOpacity>
+
               </>
             ) : (
               <View style={styles.menuContainer}>
                 <TouchableMenuItem
                   icon="login"
                   text="Login / Register"
-                  onPress={() => navigation.navigate("LoginScreen")}
+                  onPress={() => navigation.navigate("Login")}
                 />
               </View>
             )}
@@ -211,7 +223,7 @@ const Header = () => {
       </Modal>
 
       {/* Cart Popup */}
-       <Modal
+      <Modal
         visible={showCartPopup}
         transparent
         animationType="fade"
@@ -226,7 +238,7 @@ const Header = () => {
             <View style={styles.cartHeader}>
               <Text style={styles.cartTitle}>Cart</Text>
               <Text style={styles.cartSubtitle}>
-                {cartItems.length > 0 
+                {cartItems.length > 0
                   ? `You have ${cartItems.reduce((sum, item) => sum + item.quantity, 0)} items in the cart`
                   : 'Your cart is empty'}
               </Text>
@@ -537,7 +549,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-    cartBadge: {
+  cartBadge: {
     position: 'absolute',
     top: -5,
     right: -5,
