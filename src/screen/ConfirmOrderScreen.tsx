@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/types';
+import { RootStackParamList } from '../components/navigation';
 
 // Định nghĩa kiểu cho sản phẩm
 interface OrderItem {

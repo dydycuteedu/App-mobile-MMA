@@ -3,6 +3,7 @@ export type RootStackParamList = {
   Login: undefined;
   Signin: undefined;
   Main: undefined;
+  Profile: undefined;
   Snack: undefined;
   Meal: undefined;
   Vegan: undefined;
@@ -15,4 +16,7 @@ export type RootStackParamList = {
   LiveTrackingScreen: { order: Order };
   ReviewScreen: { order: Order };
   Detail: { item: any };
+  DeliveryAddressScreen: undefined;
+PaymentMethodScreen: undefined;
+
 };

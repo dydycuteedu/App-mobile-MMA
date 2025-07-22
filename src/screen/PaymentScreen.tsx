@@ -1,5 +1,5 @@
 // src/screens/PaymentScreen.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,44 +13,82 @@ import {
 } from 'react-native';
 import { MaterialIcons, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { getPaymentsByUser } from '../api/paymentApi';
+import { createOrder } from '../api/orderApi';
+
+
 
 const PaymentScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  
-  // State cho phương thức thanh toán
-  const [paymentMethod, setPaymentMethod] = useState('credit'); // 'credit' hoặc 'cash'
-  
-  // State cho thông tin thẻ
+
+  const [paymentMethod, setPaymentMethod] = useState('credit');
   const [cardNumber, setCardNumber] = useState('**** **** **** 1234');
   const [expiryDate, setExpiryDate] = useState('12/25');
   const [cvv, setCvv] = useState('***');
-  
+
+  const [payments, setPayments] = useState([]);
+  const userId = 'u1';
+
+  useEffect(() => {
+    getPaymentsByUser(userId).then(setPayments);
+  }, []);
+
+
   // Lấy thông tin từ route.params
   const { orderItems, shippingAddress, total } = route.params || {};
-  
+
   // Tính toán giá trị
   const subtotal = orderItems?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
   const taxAndFees = subtotal * 0.1;
   const deliveryFee = 0;
   const calculatedTotal = total || (subtotal + taxAndFees + deliveryFee);
 
-  const handlePayNow = () => {
-    navigation.navigate('OrderSuccessScreen');
+  const handlePayNow = async () => {
+    const orderId = `o${Date.now()}`;
+    const newOrder = {
+      id: orderId,
+      customerId: 'u1',
+      name: orderItems[0]?.name || 'Order',
+      price: calculatedTotal.toFixed(2),
+      date: new Date().toLocaleString(),
+      items: `${orderItems.length} item${orderItems.length > 1 ? 's' : ''}`,
+      status: 'Pending',
+      image: orderItems[0]?.image || 'green-tea.png',
+      orderNumber: Math.floor(Math.random() * 1000000).toString().padStart(7, '0'),
+      subtotal: subtotal.toFixed(2),
+      tax: taxAndFees.toFixed(2),
+      deliveryFee: deliveryFee.toFixed(2),
+      total: calculatedTotal.toFixed(2),
+      deliveryTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 giờ sau
+      itemsList: orderItems.map((item: any) => ({
+        name: item.name,
+        price: item.price
+      }))
+    };
+
+    try {
+      await createOrder(newOrder); // Gửi lên JSON Server
+      navigation.navigate('OrderSuccessScreen');
+    } catch (err) {
+      console.error('Lỗi tạo đơn hàng:', err);
+      Alert.alert('Error', 'Could not create order');
+    }
   };
 
+
   const handleEditAddress = () => {
-    navigation.navigate('EditAddressScreen');
+    navigation.navigate('DeliveryAddressScreen');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#FFD93D" />
-      
+
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton} 
+        <TouchableOpacity
+          style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
           <Text style={styles.backIcon}>←</Text>
@@ -84,7 +122,7 @@ const PaymentScreen = () => {
               <Text style={styles.sectionTitle}>Order Summary</Text>
               <Text style={styles.orderTotal}>${calculatedTotal.toFixed(2)}</Text>
             </View>
-            
+
             {orderItems?.map((item, index) => (
               <View key={index} style={styles.orderItem}>
                 <Text style={styles.itemText}>
@@ -100,10 +138,10 @@ const PaymentScreen = () => {
           {/* Payment Method */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Payment Method</Text>
-            
+
             {/* Tùy chọn Credit Card */}
-            <TouchableOpacity 
-              style={styles.paymentOption} 
+            <TouchableOpacity
+              style={styles.paymentOption}
               onPress={() => setPaymentMethod('credit')}
             >
               <View style={styles.paymentMethodRow}>
@@ -119,10 +157,10 @@ const PaymentScreen = () => {
                 <MaterialIcons name="radio-button-unchecked" size={24} color="#777" />
               )}
             </TouchableOpacity>
-            
+
             {/* Tùy chọn Cash */}
-            <TouchableOpacity 
-              style={styles.paymentOption} 
+            <TouchableOpacity
+              style={styles.paymentOption}
               onPress={() => setPaymentMethod('cash')}
             >
               <View style={styles.paymentMethodRow}>
@@ -138,7 +176,7 @@ const PaymentScreen = () => {
                 <MaterialIcons name="radio-button-unchecked" size={24} color="#777" />
               )}
             </TouchableOpacity>
-            
+
             {/* Thông tin thẻ (chỉ hiển thị khi chọn Credit Card) */}
             {paymentMethod === 'credit' && (
               <View style={styles.cardInfoContainer}>
@@ -146,23 +184,28 @@ const PaymentScreen = () => {
                   <Text style={styles.cardLabel}>Card Number</Text>
                   <Text style={styles.cardValue}>{cardNumber}</Text>
                 </View>
-                
-                
+
+
                 <View style={styles.cardDetailsRow}>
                   <View style={styles.cardDetail}>
                     <Text style={styles.cardLabel}>Expiry Date</Text>
                     <Text style={styles.cardValue}>{expiryDate}</Text>
                   </View>
-                  
+
                   <View style={styles.cardDetail}>
                     <Text style={styles.cardLabel}>CVV</Text>
                     <Text style={styles.cardValue}>{cvv}</Text>
                   </View>
                 </View>
-                
-                <TouchableOpacity style={styles.editCardButton}>
+
+                <TouchableOpacity
+                  style={styles.editCardButton}
+                  onPress={() => navigation.navigate('PaymentMethodScreen')}
+                >
                   <Text style={styles.editCardText}>Edit Card Info</Text>
                 </TouchableOpacity>
+
+
               </View>
             )}
           </View>
@@ -176,7 +219,7 @@ const PaymentScreen = () => {
               <Text style={styles.sectionTitle}>Delivery Time</Text>
               <Ionicons name="time-outline" size={24} color="#f97316" />
             </View>
-            
+
             <View style={styles.deliveryTimeContainer}>
               <Text style={styles.deliveryTimeLabel}>Estimated Delivery</Text>
               <Text style={styles.deliveryTimeValue}>Thu, 29th 4:00 PM</Text>
@@ -206,8 +249,8 @@ const PaymentScreen = () => {
       </View>
 
       {/* Pay Now Button */}
-      <TouchableOpacity 
-        style={styles.payNowButton} 
+      <TouchableOpacity
+        style={styles.payNowButton}
         onPress={handlePayNow}
       >
         <Text style={styles.payNowText}>Pay Now</Text>

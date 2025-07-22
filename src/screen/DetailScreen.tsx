@@ -6,17 +6,35 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useCart } from './CartContext';
 
-const DetailScreen = ({ route }: any) => {
-  const { item } = route.params;
-  const [quantity, setQuantity] = useState(1);
-  const [selectedPortion, setSelectedPortion] = useState('Personal');
+interface PortionOption {
+  label: string;
+  price: number;
+}
+const validatePrice = (price: any): number => {
+  if (typeof price === 'number') return price;
+  const parsed = parseFloat(price);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+const DetailScreen = () => {
+  const route = useRoute();
   const navigation = useNavigation();
+  const { item } = route.params as { item: any };
+  const { addToCart } = useCart();
+  
+  const [quantity, setQuantity] = useState(1);
+  const [selectedPortion, setSelectedPortion] = useState<PortionOption>({
+    label: 'Personal (4 Slices)',
+    price: 0
+  });
 
-  const portionOptions = [
+  const portionOptions: PortionOption[] = [
     { label: 'Personal (4 Slices)', price: 0 },
     { label: 'Medium (8 Slices)', price: 3 },
     { label: 'Familiar (10 Slices)', price: 5 },
@@ -26,9 +44,31 @@ const DetailScreen = ({ route }: any) => {
   const increaseQty = () => setQuantity(prev => prev + 1);
   const decreaseQty = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
+  const handleAddToCart = () => {
+    const validatedItemPrice = validatePrice(item.price);
+    const validatedPortionPrice = validatePrice(selectedPortion.price);
+    
+    const cartItem = {
+      id: item.id,
+      name: item.name,
+      price: validatedItemPrice + validatedPortionPrice,
+      image: item.image,
+      portion: selectedPortion.label,
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      quantity: quantity // Sử dụng quantity state thay vì hardcode 1
+    };
+
+    addToCart(cartItem);
+    Alert.alert('Đã thêm vào giỏ hàng');
+  };
+
+  // Tính toán giá trị để hiển thị (đảm bảo validate price trước khi tính toán)
+  const displayPrice = (validatePrice(item.price) + validatePrice(selectedPortion.price)).toFixed(2);
+  const displayTotal = (quantity * (validatePrice(item.price) + validatePrice(selectedPortion.price))).toFixed(2);
+
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.headerRow}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color="#333" />
@@ -37,7 +77,6 @@ const DetailScreen = ({ route }: any) => {
         <Ionicons name="heart-outline" size={24} color="#f97316" />
       </View>
 
-      {/* Image with Discount Badge */}
       <View style={styles.imageContainer}>
         <Image source={{ uri: item.image }} style={styles.image} />
         <View style={styles.discountBadge}>
@@ -45,53 +84,58 @@ const DetailScreen = ({ route }: any) => {
         </View>
       </View>
 
-      {/* Price and Quantity */}
-      <View style={styles.priceRow}>
-        <Text style={styles.newPrice}>${item.price}</Text>
+       <View style={styles.priceRow}>
+        <Text style={styles.newPrice}>${displayPrice}</Text>
         <Text style={styles.oldPrice}>$20.00</Text>
         <View style={styles.quantityControls}>
-          <TouchableOpacity onPress={decreaseQty}><Text style={styles.qtyBtn}>-</Text></TouchableOpacity>
+          <TouchableOpacity onPress={decreaseQty}>
+            <Text style={styles.qtyBtn}>-</Text>
+          </TouchableOpacity>
           <Text style={styles.qtyValue}>{quantity}</Text>
-          <TouchableOpacity onPress={increaseQty}><Text style={styles.qtyBtn}>+</Text></TouchableOpacity>
+          <TouchableOpacity onPress={increaseQty}>
+            <Text style={styles.qtyBtn}>+</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Description */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Lorem ipsum dolor sit amet</Text>
+        <Text style={styles.sectionTitle}>Description</Text>
         <Text style={styles.description}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.
+          {item.description || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.'}
         </Text>
       </View>
 
-      {/* Portion Options */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Personal portion</Text>
+        <Text style={styles.sectionTitle}>Portion Options</Text>
         {portionOptions.map(option => (
           <TouchableOpacity
             key={option.label}
             style={styles.radioRow}
-            onPress={() => setSelectedPortion(option.label)}>
+            onPress={() => setSelectedPortion(option)}
+          >
             <Ionicons
-              name={selectedPortion === option.label ? 'radio-button-on' : 'radio-button-off'}
+              name={selectedPortion.label === option.label ? 'radio-button-on' : 'radio-button-off'}
               size={20}
               color="#f97316"
             />
             <Text style={styles.radioLabel}>{option.label}</Text>
-            <Text style={styles.radioPrice}>${option.price}</Text>
+            <Text style={styles.radioPrice}>
+              {option.price > 0 ? `+$${option.price.toFixed(2)}` : 'Free'}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Add to Cart */}
-      <TouchableOpacity style={styles.cartBtn}>
-        <Text style={styles.cartBtnText}>Add to Cart</Text>
+      <TouchableOpacity 
+        style={styles.cartBtn} 
+        onPress={handleAddToCart}
+      >
+        <MaterialIcons name="add-shopping-cart" size={20} color="white" />
+        <Text style={styles.cartBtnText}>Add to Cart (${displayTotal})</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 };
-
-export default DetailScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -158,6 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     paddingHorizontal: 12,
+    color: '#f97316',
   },
   qtyValue: {
     fontSize: 16,
@@ -198,6 +243,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
   },
   cartBtnText: {
     color: 'white',
@@ -205,3 +253,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+export default DetailScreen;

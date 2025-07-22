@@ -1,6 +1,6 @@
 import { Food } from '../dataTypes/foodTypes';
 
-const BASE_URL = 'http://192.168.5.107:3000/foods';
+const BASE_URL = 'http://192.168.6.209:3000/foods';
 
 // Utility to handle fetch + JSON + error
 const fetchData = async <T>(url: string, options?: RequestInit): Promise<T> => {
