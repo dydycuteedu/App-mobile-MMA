@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
@@ -16,19 +15,17 @@ const ProfileScreen = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserFromStorage = async () => {
       try {
-        const storedUserId = await AsyncStorage.getItem('userId');
-        if (!storedUserId) {
+        const userData = await AsyncStorage.getItem('loggedInUser');
+        if (!userData) {
           Alert.alert('Thông báo', 'Chưa đăng nhập');
           setLoading(false);
           return;
         }
 
-        const response = await axios.get(
-          `http://<YOUR_LOCAL_IP>:3000/users/${storedUserId}`
-        );
-        setUser(response.data);
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
       } catch (error) {
         console.error('Lỗi khi lấy thông tin người dùng:', error);
         Alert.alert('Lỗi', 'Không thể tải thông tin người dùng');
@@ -37,7 +34,7 @@ const ProfileScreen = () => {
       }
     };
 
-    fetchUser();
+    fetchUserFromStorage();
   }, []);
 
   if (loading) {
@@ -59,7 +56,7 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: user.avatar || 'https://i.pravatar.cc/150?img=1' }}
+        source={{ uri: 'https://i.pravatar.cc/150?u=' + user.email }}
         style={styles.avatar}
       />
       <Text style={styles.name}>{user.name}</Text>
