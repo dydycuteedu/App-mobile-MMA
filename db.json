@@ -33,7 +33,7 @@
   ],
   "foods": [
     {
-      "id": "1",
+      "id": 1,
       "name": "Burger",
       "description": "Tortilla Chips with Toppings",
       "price": "15.00",
@@ -41,12 +41,116 @@
       "image": "https://tse1.mm.bing.net/th/id/OIP.B9PNM_4v_tHNKc-HuJ3MwAHaHa?pid=Api&P=0&h=220"
     },
     {
-      "id": "2",
+      "id": 2,
       "name": "Pizza",
       "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
       "price": "12.99",
       "category": "Snacks",
       "image": "https://cdn.pixabay.com/photo/2021/04/06/14/38/pizza-6156566_640.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Sesame Chicken",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Snacks",
+      "image": "https://cdn.pixabay.com/photo/2022/06/23/09/38/chicken-7279387_960_720.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Taco",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Snacks",
+      "image": "https://cdn.pixabay.com/photo/2015/11/02/20/27/taco-1018962_960_720.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Quinoa Salad",
+      "description": "Fried chicken with rice and egg",
+      "price": "15.00",
+      "category": "Vegan",
+      "image": "https://cdn.pixabay.com/photo/2017/11/29/17/38/quinoa-2986706_1280.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Avocado Toast",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Vegan",
+      "image": "https://cdn.pixabay.com/photo/2022/02/12/21/22/toast-7009956_1280.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Vegan Salad",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Vegan",
+      "image": "https://cdn.pixabay.com/photo/2016/10/31/18/23/salad-1786327_960_720.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Katsu Donburi",
+      "description": "Fried chicken with rice and egg",
+      "price": "15.00",
+      "category": "Meal",
+      "image": "https://cdn.pixabay.com/photo/2020/02/17/03/52/don-katsu-4855353_960_720.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Bolognese Pasta",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Meal",
+      "image": "https://cdn.pixabay.com/photo/2021/10/11/09/04/pasta-and-potatoes-6699892_960_720.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Pad Thai",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Meal",
+      "image": "https://cdn.pixabay.com/photo/2021/10/30/12/49/thai-food-6754240_960_720.jpg"
+    },
+    {
+      "id": 11,
+      "name": "Blueberry Tea",
+      "description": "Fried chicken with rice and egg",
+      "price": "15.00",
+      "category": "Drinks",
+      "image": "https://tse3.mm.bing.net/th/id/OIP.X2KWzuxUnEKP6Xpuw5gxOwHaE8?pid=Api&P=0&h=220"
+    },
+    {
+      "id": 12,
+      "name": "Green Tea",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Drinks",
+      "image": "https://senchateabar.com/cdn/shop/articles/5d8a366133b3d4ae8ccbd8f2_PS6m4tTs1TY_RCmkOoBSYfRz4OLkCDcM68U3Y6DzMoLK4X3WTOovYCxRk9if4gVHjWLQ57awCpQCXFJaZhSF80GjQuaD52uXT_8eJMEh8ai7FGJR_ncxxUb-kJPoXcy2p-TPr5lL_1200x1200.jpg?v=1597175650"
+    },
+    {
+      "id": 13,
+      "name": "Caramel Popcorn Milkshake",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Drinks",
+      "image": "https://i.pinimg.com/736x/de/9c/c6/de9cc63b87edbd94f3a253a75dd8087f.jpg"
+    },
+    {
+      "id": 14,
+      "name": "Apple Pie",
+      "description": "Fried chicken with rice and egg",
+      "price": "15.00",
+      "category": "Dessert",
+      "image": "https://homepressurecooking.com/wp-content/uploads/2025/01/apple-pie-recipe-1738078701.jpg"
+    },
+    {
+      "id": 15,
+      "name": "Strawberry Cheesecake",
+      "description": "Marinated in herbs and spices, grilled to perfection, served with a rich dip.",
+      "price": "12.99",
+      "category": "Dessert",
+      "image": "https://tse1.mm.bing.net/th/id/OIP.ff8db0R2tLf4J-u6ceNSvAHaHa?pid=Api&P=0&h=220"
     }
   ],
   "orders": [
@@ -281,7 +385,7 @@
       "price": "12.99",
       "date": "22/7/2025, 13:17:02",
       "items": "1 item",
-      "status": "Pending",
+      "status": "Completed",
       "image": "pizza.png",
       "orderNumber": "0033308",
       "subtotal": "12.99",
@@ -303,7 +407,7 @@
       "price": "22.00",
       "date": "22/7/2025, 13:23:49",
       "items": "1 item",
-      "status": "Pending",
+      "status": "Completed",
       "image": "chicken.png",
       "orderNumber": "0191430",
       "subtotal": "20.00",
@@ -325,7 +429,7 @@
       "price": "12.99",
       "date": "22/7/2025, 13:23:51",
       "items": "1 item",
-      "status": "Pending",
+      "status": "Completed",
       "image": "pizza.png",
       "orderNumber": "0995015",
       "subtotal": "12.99",
@@ -347,7 +451,7 @@
       "price": "49.00",
       "date": "22/7/2025, 13:26:51",
       "items": "2 items",
-      "status": "Pending",
+      "status": "Completed",
       "image": "coffee-icecream.png",
       "orderNumber": "0000254",
       "subtotal": "40.00",
@@ -365,12 +469,49 @@
           "price": 20
         }
       ]
+    },
+    {
+      "id": "o1753174254770",
+      "customerId": "u1",
+      "name": "Coffee Ice Cream",
+      "price": "49.00",
+      "date": "22/7/2025, 15:50:54",
+      "items": "2 items",
+      "status": "Pending",
+      "image": "coffee-icecream.png",
+      "orderNumber": "0560255",
+      "subtotal": "40.00",
+      "tax": "4.00",
+      "deliveryFee": "0.00",
+      "total": "49.00",
+      "deliveryTime": "2025-07-22T10:50:54.771Z",
+      "itemsList": [
+        {
+          "name": "Coffee Ice Cream",
+          "price": 20
+        },
+        {
+          "name": "Extra Topping",
+          "price": 20
+        }
+      ]
     }
   ],
   "cart": [
     {
       "userId": "u1",
-      "cartItems": [],
+      "cartItems": [
+        {
+          "id": 5,
+          "name": "Quinoa Salad",
+          "price": 15,
+          "image": "https://cdn.pixabay.com/photo/2017/11/29/17/38/quinoa-2986706_1280.jpg",
+          "portion": "Personal (4 Slices)",
+          "date": "22/7/2025",
+          "time": "16:05",
+          "quantity": 1
+        }
+      ],
       "id": "1"
     }
   ],

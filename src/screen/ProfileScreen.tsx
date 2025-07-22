@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Image, SafeAreaView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileScreen = () => {
-  // Dữ liệu người dùng cố định
+  const navigation = useNavigation();
+
   const user = {
     id: '1753087563245',
     name: 'dy',
     email: 'cdy@gmail.com',
-    password: '1', // Không hiển thị mật khẩu
+    password: '1',
     address: 'N/A',
     phone: '0905443128',
     role: 'customer',
@@ -19,7 +21,7 @@ const ProfileScreen = () => {
       <View style={styles.profileCard}>
         <Image
           style={styles.avatar}
-          source={require('../assets/images/anh.jpg')} // Thay bằng hình thật nếu có
+          source={require('../assets/images/anh.jpg')}
         />
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.email}>{user.email}</Text>
@@ -34,6 +36,11 @@ const ProfileScreen = () => {
           <Text style={styles.infoLabel}>Vai trò:</Text>
           <Text style={styles.infoValue}>{user.role}</Text>
         </View>
+
+        {/* Nút Back */}
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>← Quay về</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -86,6 +93,18 @@ const styles = StyleSheet.create({
   },
   infoValue: {
     color: '#fff',
+    fontSize: 16,
+  },
+  backButton: {
+    marginTop: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+  },
+  backButtonText: {
+    color: '#FFA726',
+    fontWeight: 'bold',
     fontSize: 16,
   },
 });
