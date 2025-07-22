@@ -23,43 +23,45 @@ export default function LoginScreen() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState(""); // State này sẽ chứa email
   const [password, setPassword] = useState("");
+const handleLogin = async () => {
+  if (!username || !password) {
+    Alert.alert("Lỗi", "Vui lòng nhập email và mật khẩu");
+    return;
+  }
 
-  const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert("Lỗi", "Vui lòng nhập email và mật khẩu");
-      return;
-    }
-    try {
-      // API call đã được cập nhật với IP đúng
-      const response = await fetch(
-        `http://${YOUR_COMPUTER_IP}:3000/users?email=${username}&password=${password}`
-      );
-      const data = await response.json();
+  try {
+    const response = await fetch(
+      `http://192.168.6.209:3000/users?email=${username}&password=${password}`
+    );
+    const data = await response.json();
 
-      if (data.length > 0) {
-        const user = data[0];
+    if (data.length > 0) {
+      const user = data[0];
 
-        if (user.isBanned) {
-          Alert.alert("Truy cập bị từ chối", "Tài khoản của bạn đã bị khóa.");
-          return;
-        }
-
-        // Điều hướng dựa trên vai trò (role)
-        if (user.role === "admin") {
-          navigation.navigate("Admin");
-        } else if (user.role === "customer") {
-          navigation.navigate("Main");
-        } else {
-          Alert.alert("Vai trò không xác định", "Vai trò người dùng không được nhận dạng.");
-        }
-      } else {
-        Alert.alert("Đăng nhập thất bại", "Email hoặc mật khẩu không hợp lệ");
+      if (user.isBanned) {
+        Alert.alert("Truy cập bị từ chối", "Tài khoản của bạn đã bị khóa.");
+        return;
       }
-    } catch (error) {
-      console.error("Lỗi đăng nhập:", error);
-      Alert.alert("Lỗi", "Không thể kết nối đến server. Hãy đảm bảo server đang chạy và IP đã đúng.");
+
+      // Lưu thông tin user vào AsyncStorage
+      await AsyncStorage.setItem('loggedInUser', JSON.stringify(user));
+
+      // Điều hướng theo vai trò
+      if (user.role === 'admin') {
+        navigation.navigate('Admin');
+      } else if (user.role === 'customer') {
+        navigation.navigate('Main');
+      } else {
+        Alert.alert("Lỗi", "Vai trò người dùng không được nhận dạng.");
+      }
+    } else {
+      Alert.alert("Đăng nhập thất bại", "Email hoặc mật khẩu không đúng");
     }
-  };
+  } catch (error) {
+    console.error("Lỗi đăng nhập:", error);
+    Alert.alert("Lỗi", "Không thể kết nối đến server. Hãy kiểm tra lại IP hoặc khởi động lại JSON Server.");
+  }
+};
 
   return (
     <View style={styles.container}>
