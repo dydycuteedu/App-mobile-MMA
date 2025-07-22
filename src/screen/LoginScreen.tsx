@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ===================================================================
 // ĐỊA CHỈ IP MỚI CỦA CẬU ĐÃ ĐƯỢC CẬP NHẬT
-const YOUR_COMPUTER_IP = '192.168.6.209';
+const YOUR_COMPUTER_IP = "10.12.66.89";
 // ===================================================================
 
 export default function LoginScreen() {
@@ -23,10 +23,6 @@ export default function LoginScreen() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState(""); // State này sẽ chứa email
   const [password, setPassword] = useState("");
-
-  
-
-
 const handleLogin = async () => {
   if (!username || !password) {
     Alert.alert("Lỗi", "Vui lòng nhập email và mật khẩu");

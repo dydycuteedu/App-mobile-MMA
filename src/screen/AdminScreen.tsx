@@ -20,7 +20,8 @@ export default function AdminScreen({ navigation }: Props) {
   const foodAnim = createAnimated();
   const promoAnim = createAnimated();
   const userAnim = createAnimated();
-  const orderAnim = createAnimated(); // <-- ĐÃ THÊM
+  const orderAnim = createAnimated();
+
 
   const animateIn = (anim: Animated.Value) => {
     Animated.spring(anim, {
@@ -49,7 +50,7 @@ export default function AdminScreen({ navigation }: Props) {
       </View>
 
       <View style={styles.body}>
-        {/* Phần trên: Avatar và tên admin + profile button */}
+        {/* Avatar + Tên Admin + Profile */}
         <View style={styles.profileContainer}>
           <View style={styles.leftProfile}>
             <Image
@@ -65,6 +66,7 @@ export default function AdminScreen({ navigation }: Props) {
 
         <View style={styles.divider} />
 
+        {/* Các nút chức năng */}
         <View style={styles.menuContainer}>
           <Pressable
             onPress={() => navigation.navigate("FoodManagement")}
@@ -102,7 +104,6 @@ export default function AdminScreen({ navigation }: Props) {
             </Animated.View>
           </Pressable>
 
-          {/* 👇 NÚT MỚI ĐÃ ĐƯỢC THÊM VÀO ĐÂY */}
           <Pressable
             onPress={() => navigation.navigate("OrderManagement")}
             onPressIn={() => animateIn(orderAnim)}
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 15,
+    marginBottom: 10,
   },
 
   leftProfile: {
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    marginVertical: 15,
+    marginVertical: 10,
   },
 
   menuContainer: {
